@@ -34,6 +34,7 @@
         This module allow to load prexisting Sale Orders in the POS
     """,
     'data': [
+        'view/pos_sale_order_load.xml',
     ],
     'qweb': [
         'static/src/xml/pos_sale_order_load.xml',

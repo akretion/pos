@@ -22,14 +22,14 @@
 from openerp import models, api
 
 
-class PosOrder(models.Model):
-    _inherit = 'pos.order'
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
 
     @api.model
     def pos_order_filter(self, orders_dict):
         res = []
         for order_dict in orders_dict:
-            order = self.env['sale.order'].browse(order_dict['id'])
+            order = self.browse(order_dict['id'])
             pos_order = True
             for order_line in order.order_line:
                 if not order_line.product_id.available_in_pos:
@@ -49,15 +49,14 @@ class PosOrder(models.Model):
             ('partner_id', 'ilike', query)
         ]
         fields = ['name', 'partner_id']
-        sale_obj = self.env['sale.order']
-        res = sale_obj.search_read(condition, fields, limit=10)
+        res = self.search_read(condition, fields, limit=10)
         return self.pos_order_filter(res)
 
     @api.one
     def load_order(self):
         condition = [('order_id', '=', self.id)]
         fields = ['product_id', 'price_unit', 'product_uom_qty', 'discount']
-        orderlines = self.env['sale.order.line'].search_read(condition, fields)
+        orderlines = self.order_line.search_read(condition, fields)
         return {
             'partner_id': self.partner_id and self.partner_id.id or False,
             'orderlines': orderlines

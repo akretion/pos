@@ -71,6 +71,7 @@ openerp.pos_order_load = function(instance, local) {
     module.OrderListScreenWidget = module.ScreenWidget.extend({
         template: 'OrderListScreenWidget',
         show_leftpane: true,
+        model: 'pos.order',
 
         init: function(parent, options){
             this._super(parent, options);
@@ -119,8 +120,8 @@ openerp.pos_order_load = function(instance, local) {
 
         load_order: function(order_id) {
             var self = this;
-            var posOrderModel = new instance.web.Model('pos.order');
-            return posOrderModel.call('load_order', [order_id])
+            var orderModel = new instance.web.Model(this.model);
+            return orderModel.call('load_order', [order_id])
             .then(function (result) {
                 var order = self.pos.get('selectedOrder');
                 order.get('orderLines').reset();
@@ -173,8 +174,8 @@ openerp.pos_order_load = function(instance, local) {
 
         load_orders: function(query) {
             var self = this;
-            var posOrderModel = new instance.web.Model('pos.order');
-            return posOrderModel.call('search_read_orders', [query || ''])
+            var orderModel = new instance.web.Model(this.model);
+            return orderModel.call('search_read_orders', [query || ''])
             .then(function (result) {
                 self.render_list(result);
             }).fail(function (error, event){
