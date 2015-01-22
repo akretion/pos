@@ -21,9 +21,30 @@
 
 from openerp import models, api
 
+class PosOrder(models.Model):
+    _inherit = 'pos.order'
+
+    def _prepare_sale_order_vals(self, cr, uid, ui_order, context=None):
+        context = context or {}
+        res = super(PosOrder, self)._prepare_sale_order_vals(
+            cr, uid, ui_order, context=context)
+        if 'order_id' in ui_order:
+            res['order_id'] = ui_order['order_id']
+        return res
+
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
+
+    @api.model
+    def create(self, vals):
+        if 'order_id' in vals:
+            order = self.browse(vals['order_id'])
+            vals['order_line'] = [(5, 0)].append(vals['order_line'])
+            order.write(vals)
+            return order
+        else:
+            return super(SaleOrder, self).create(vals)
 
     @api.model
     def pos_order_filter(self, orders_dict):
@@ -58,6 +79,8 @@ class SaleOrder(models.Model):
         fields = ['product_id', 'price_unit', 'product_uom_qty', 'discount']
         orderlines = self.order_line.search_read(condition, fields)
         return {
+            'id': self.id,
+            'name': self.name,
             'partner_id': self.partner_id and self.partner_id.id or False,
             'orderlines': orderlines
         }

@@ -20,10 +20,21 @@ openerp.pos_sale_order_load = function(instance, local) {
     var _t = instance.web._t;
     var round_pr = instance.web.round_precision;
 
+    module.Order = module.Order.extend({
+
+        export_as_JSON: function() {
+            var res = module.Order.__super__.export_as_JSON.apply(
+                this, arguments);
+            res.order_id = this.get_order_id();
+            return res;
+        },
+
+    });
+
     module.OrderListScreenWidget = module.OrderListScreenWidget.extend({
         model: 'sale.order',
 
-        init: function(parent, options){
+        init: function(parent, options) {
             this._super(parent, options);
         },
     });

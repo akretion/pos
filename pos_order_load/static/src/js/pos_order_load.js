@@ -20,6 +20,20 @@ openerp.pos_order_load = function(instance, local) {
     var _t = instance.web._t;
     var round_pr = instance.web.round_precision;
 
+    module.Order = module.Order.extend({
+
+        set_order_id: function(id) {
+            this.set({
+                order_id: id,
+            });
+        },
+
+        get_order_id: function() {
+            return this.get('order_id');
+        }
+
+    });
+
     module.LoadButtonWidget = module.PosBaseWidget.extend({
         template: 'LoadButtonWidget',
         init: function(parent, options){
@@ -83,6 +97,7 @@ openerp.pos_order_load = function(instance, local) {
             this.$el.find('span.button.back').click(function(){
                 order = self.pos.get('selectedOrder');
                 order.set_client(undefined);
+                order.set_order_id(undefined);
                 order.get('orderLines').reset();
                 self.pos_widget.order_widget.change_selected_order();
                 var ss = self.pos.pos_widget.screen_selector;
@@ -124,13 +139,15 @@ openerp.pos_order_load = function(instance, local) {
             return orderModel.call('load_order', [order_id])
             .then(function (result) {
                 var order = self.pos.get('selectedOrder');
+                var result = result[0];
+                order.set_order_id(result.id);
                 order.get('orderLines').reset();
 
                 var partner = self.pos.db.get_partner_by_id(
-                    result[0].partner_id);
+                    result.partner_id);
                 order.set_client(partner || undefined);
 
-                var orderlines = result[0].orderlines || [];
+                var orderlines = result.orderlines || [];
                 for (var i=0, len=orderlines.length; i<len; i++) {
                     var orderline = orderlines[i];
                     var product_id = orderline.product_id[0];

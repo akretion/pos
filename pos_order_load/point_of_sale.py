@@ -25,6 +25,13 @@ from openerp import models, api
 class PosOrder(models.Model):
     _inherit = 'pos.order'
 
+    def _order_fields(self, cr, uid, ui_order, context=None):
+        context = context or {}
+        res = super(PosOrder, self)._order_fields(cr, uid, ui_order, context)
+        if 'order_id' in ui_order:
+            res['order_id'] = ui_order['order_id']
+        return res
+
     @api.model
     def search_read_orders(self, query):
         condition = ['|',
@@ -40,6 +47,8 @@ class PosOrder(models.Model):
         fields = ['product_id', 'price_unit', 'qty', 'discount']
         orderlines = self.lines.search_read(condition, fields)
         return {
+            'id': self.id,
+            'name': self.pos_reference,
             'partner_id': self.partner_id and self.partner_id.id or False,
             'orderlines': orderlines
         }

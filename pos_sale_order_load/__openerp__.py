@@ -26,6 +26,7 @@
     'category': 'Sales Management',
     'depends': [
         'base',
+        'pos_sale_order',
         'pos_order_load',
     ],
     'demo': [],
