@@ -30,7 +30,7 @@ openerp.pos_order_load = function(instance, local) {
 
         get_order_id: function() {
             return this.get('order_id');
-        }
+        },
 
     });
 

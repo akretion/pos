@@ -23,8 +23,7 @@ openerp.pos_sale_order_load = function(instance, local) {
     module.Order = module.Order.extend({
 
         export_as_JSON: function() {
-            var res = module.Order.__super__.export_as_JSON.apply(
-                this, arguments);
+            res = this._super();
             res.order_id = this.get_order_id();
             return res;
         },

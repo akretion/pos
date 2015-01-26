@@ -40,7 +40,7 @@ class SaleOrder(models.Model):
     def create(self, vals):
         if 'order_id' in vals:
             order = self.browse(vals['order_id'])
-            vals['order_line'] = [(5, 0)].append(vals['order_line'])
+            vals['order_line'] = [(5, 0)] + vals['order_line']
             order.write(vals)
             return order
         else:
