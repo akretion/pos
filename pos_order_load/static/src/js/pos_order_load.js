@@ -152,6 +152,15 @@ openerp.pos_order_load = function(instance, local) {
                     var orderline = orderlines[i];
                     var product_id = orderline.product_id[0];
                     var product = self.pos.db.get_product_by_id(product_id);
+                    if (_.isUndefined(product)) {
+                        console.error(
+                            'Unable to load order line because the '+
+                            'product is not available in the POS cache '+
+                            'check these POS related fields'+
+                            '(product_id='+product_id+')'
+                        );
+                        continue;
+                    }
                     var options = {
                         quantity: orderline.qty,
                         price: orderline.price_unit,

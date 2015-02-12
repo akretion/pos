@@ -49,3 +49,6 @@
     width: 120px;
 }
 
+.pos .order-line .total {
+    text-align: right;
+}

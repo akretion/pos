@@ -26,11 +26,7 @@
     'author': 'Akretion',
     'category': 'Sales Management',
     'depends': [
-        'base',
-        'decimal_precision',
         'point_of_sale',
-        'product',
-        'web',
     ],
     'demo': [],
     'website': 'https://www.akretion.com',
