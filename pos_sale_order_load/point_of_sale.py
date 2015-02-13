@@ -69,7 +69,7 @@ class SaleOrder(models.Model):
             ('name', 'ilike', query),
             ('partner_id', 'ilike', query)
         ]
-        fields = ['name', 'partner_id']
+        fields = ['name', 'partner_id', 'amount_total']
         res = self.search_read(condition, fields, limit=10)
         return self.pos_order_filter(res)
 

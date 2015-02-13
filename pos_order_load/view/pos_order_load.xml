@@ -5,7 +5,6 @@
     <data>
         <template id="assets_backend" name="pos_order_load assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
-                <script type="text/javascript" src="/pos_order_load/static/lib/backbone-super.js"></script>
                 <script type="text/javascript" src="/pos_order_load/static/src/js/pos_order_load.js"></script>
             </xpath>
         </template>

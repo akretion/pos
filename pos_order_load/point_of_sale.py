@@ -38,10 +38,10 @@ class PosOrder(models.Model):
             ('state', '=', 'draft'),
             ('statement_ids', '=', False),
             '|',
-            ('pos_reference', 'ilike', query),
+            ('name', 'ilike', query),
             ('partner_id', 'ilike', query)
         ]
-        fields = ['name', 'pos_reference', 'partner_id', 'amount_total']
+        fields = ['name', 'partner_id', 'amount_total']
         return self.search_read(condition, fields, limit=10)
 
     @api.one

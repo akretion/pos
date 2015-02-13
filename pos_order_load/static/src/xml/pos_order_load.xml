@@ -8,7 +8,6 @@
     <t t-name="LoadOrderLine">
         <tr class="order-line" t-att-data-order-id="order.id">
             <td><t t-esc="order.name"/></td>
-            <td><t t-esc="order.pos_reference || ''"/></td>
             <td t-if="order.partner_id"><t t-esc="order.partner_id[1]"/></td>
             <td t-if="!order.partner_id"></td>
             <td class="total"><t t-esc="widget.format_currency(order.amount_total)"/></td>
@@ -52,7 +51,6 @@
                                         <thead>
                                             <tr>
                                                 <th>Order</th>
-                                                <th>POS reference</th>
                                                 <th>Customer</th>
                                                 <th>Total Amount</th>
                                             </tr>

@@ -38,7 +38,6 @@
         'view/pos_sale_order_load.xml',
     ],
     'qweb': [
-        'static/src/xml/pos_sale_order_load.xml',
     ],
     'test': [],
     'installable': True,
