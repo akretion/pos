@@ -20,7 +20,7 @@ openerp.pos_sale_order_load = function(instance, local) {
     var _t = instance.web._t;
     var round_pr = instance.web.round_precision;
 
-    export_as_JSON_original = module.Order.export_as_JSON;
+    export_as_JSON_original = module.Order.prototype.export_as_JSON;
     module.Order = module.Order.extend({
 
         export_as_JSON: function() {
