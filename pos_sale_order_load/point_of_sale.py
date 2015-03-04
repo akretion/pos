@@ -24,10 +24,8 @@ from openerp import models, api
 class PosOrder(models.Model):
     _inherit = 'pos.order'
 
-    def _prepare_sale_order_vals(self, cr, uid, ui_order, context=None):
-        context = context or {}
-        res = super(PosOrder, self)._prepare_sale_order_vals(
-            cr, uid, ui_order, context=context)
+    def _prepare_sale_order_vals(self, ui_order):
+        res = super(PosOrder, self)._prepare_sale_order_vals(ui_order)
         if 'order_id' in ui_order:
             res['order_id'] = ui_order['order_id']
         return res
