@@ -133,6 +133,14 @@ openerp.pos_order_load = function(instance, local) {
             return product;
         },
 
+        load_order_fields: function(order, fields) {
+            order.set_order_id(fields.id);
+            var partner = self.pos.db.get_partner_by_id(
+                fields.partner_id);
+            order.set_client(partner || undefined);
+            return order;
+        },
+
         load_order: function(order_id) {
             var self = this;
             var orderModel = new instance.web.Model(this.model);
@@ -140,13 +148,8 @@ openerp.pos_order_load = function(instance, local) {
             .then(function (result) {
                 var order = self.pos.get('selectedOrder');
                 var result = result[0];
-                order.set_order_id(result.id);
+                order = self.load_order_fields(order, result);
                 order.get('orderLines').reset();
-
-                var partner = self.pos.db.get_partner_by_id(
-                    result.partner_id);
-                order.set_client(partner || undefined);
-
                 var orderlines = result.orderlines || [];
                 for (var i=0, len=orderlines.length; i<len; i++) {
                     var orderline = orderlines[i];
