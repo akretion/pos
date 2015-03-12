@@ -141,6 +141,14 @@ openerp.pos_order_load = function(instance, local) {
             return order;
         },
 
+        prepare_orderline_options: function(orderline) {
+            return {
+                quantity: orderline.qty,
+                price: orderline.price_unit,
+                discount: orderline.discount,
+            };
+        },
+
         load_order: function(order_id) {
             var self = this;
             var orderModel = new instance.web.Model(this.model);
@@ -164,11 +172,7 @@ openerp.pos_order_load = function(instance, local) {
                         );
                         continue;
                     }
-                    var options = {
-                        quantity: orderline.qty,
-                        price: orderline.price_unit,
-                        discount: orderline.discount,
-                    }
+
 
                     for (key in orderline) {
                         if (!key.indexOf('product__')) {
@@ -177,7 +181,10 @@ openerp.pos_order_load = function(instance, local) {
                             );
                         }
                     }
-                    order.addProduct(product, options);
+
+                    order.addProduct(product,
+                        self.prepare_orderline_options(orderline)
+                    );
                     last_orderline = order.getLastOrderline();
                     last_orderline = jQuery.extend(last_orderline, orderline);
                 }

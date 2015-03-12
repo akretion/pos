@@ -37,6 +37,14 @@ openerp.pos_sale_order_load = function(instance, local) {
         init: function(parent, options) {
             this._super(parent, options);
         },
+
+        prepare_orderline_options: function(orderline) {
+            return {
+                quantity: orderline.product_uom_qty,
+                price: orderline.price_unit,
+                discount: orderline.discount,
+            };
+        },
     });
 
 }
