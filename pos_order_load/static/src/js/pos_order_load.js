@@ -91,17 +91,21 @@ openerp.pos_order_load = function(instance, local) {
             this._super(parent, options);
         },
 
+        reset_order: function(order) {
+            order.set_client(undefined);
+            order.set_order_id(undefined);
+            order.get('orderLines').reset();
+            return order;
+        },
+
         start: function() {
             var self = this;
             this._super();
             this.$el.find('span.button.back').click(function(){
                 order = self.pos.get('selectedOrder');
-                order.set_client(undefined);
-                order.set_order_id(undefined);
-                order.get('orderLines').reset();
+                self.reset_order(order);
                 self.pos_widget.order_widget.change_selected_order();
                 var ss = self.pos.pos_widget.screen_selector;
-
                 ss.set_current_screen('products');
             });
             this.$el.find('span.button.validate').click(function(){
