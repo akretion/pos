@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="pos_order_reprint assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/pos_order_reprint/static/lib/js/moment.js"></script>
+                <script type="text/javascript" src="/pos_order_reprint/static/src/js/pos_order_reprint.js"></script>
+            </xpath>
+        </template>
+        <template id="index_pos_order_reprint" name="pos_order_reprint index" inherit_id="point_of_sale.index">
+            <xpath expr="//head" position="inside">
+                <link rel="stylesheet" href="/pos_order_reprint/static/src/css/pos_order_reprint.css"/>
+            </xpath>
+        </template>
+    </data>
+</openerp>
