@@ -27,7 +27,7 @@ openerp.pos_order_reprint = function(instance) {
 
         push_order: function(order) {
             if (_.isUndefined(order)) {
-                return;
+                return push_order_original.call(this, order);
             }
 
             var receipt = order.export_for_printing();
