@@ -48,7 +48,7 @@ openerp.pos_order_reprint = function(instance) {
             var self = this;
             this._super();
             $('#all_orders').click(function () {
-                 self.pos_widget.screen_selector.set_current_screen('orderlist');
+                 self.pos_widget.screen_selector.set_current_screen('orderlist-reprint');
             });
         },
     });
@@ -57,12 +57,12 @@ openerp.pos_order_reprint = function(instance) {
         build_widgets: function() {
             this._super();
 
-            this.orderlist_screen = new module.OrderListScreenWidget(this, {});
-            this.orderlist_screen.appendTo(this.$('.screens'));
-            this.orderlist_screen.hide();
+            this.orderlist_reprint_screen = new module.OrderListReprintScreenWidget(this, {});
+            this.orderlist_reprint_screen.appendTo(this.$('.screens'));
+            this.orderlist_reprint_screen.hide();
 
-            this.screen_selector.screen_set['orderlist'] =
-                this.orderlist_screen;
+            this.screen_selector.screen_set['orderlist-reprint'] =
+                this.orderlist_reprint_screen;
         },
     });
 
@@ -78,9 +78,9 @@ openerp.pos_order_reprint = function(instance) {
 
     });
 
-    module.OrderListScreenWidget = module.ScreenWidget.extend({
-        template: 'OrderListScreenWidget',
-        next_screen: 'orderlist',
+    module.OrderListReprintScreenWidget = module.ScreenWidget.extend({
+        template: 'OrderListReprintScreenWidget',
+        next_screen: 'orderlist-reprint',
         show_leftpane: false,
         model: 'pos.order',
 
@@ -144,7 +144,7 @@ openerp.pos_order_reprint = function(instance) {
         show: function() {
             this._super();
             var ss = this.pos.pos_widget.screen_selector;
-            if (ss.get_current_screen() =='orderlist') {
+            if (ss.get_current_screen() =='orderlist-reprint') {
                 this.load_orders();
             }
         },
@@ -155,7 +155,7 @@ openerp.pos_order_reprint = function(instance) {
             contents.innerHTML = "";
             for (var i = 0, len = orders.length; i < len; i++){
                 var order = orders[i];
-                var orderline_html = QWeb.render('OrderListLine',
+                var orderline_html = QWeb.render('OrderListReprintLine',
                     {widget: this, order:order, moment: moment});
                 var orderline = document.createElement('tbody');
                 orderline.innerHTML = orderline_html;

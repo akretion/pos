@@ -7,7 +7,7 @@
         </t>
     </t>
 
-    <t t-name="OrderListLine">
+    <t t-name="OrderListReprintLine">
         <tr class="order-line">
             <td><t t-esc="moment.utc(order.date_order).local().format('L LTS')"/></td>
             <td><t t-esc="order.name"/></td>
@@ -17,8 +17,8 @@
         </tr>
     </t>
 
-    <t t-name="OrderListScreenWidget">
-        <div class="orderlist-screen screen">
+    <t t-name="OrderListReprintScreenWidget">
+        <div class="orderlist-reprint-screen screen">
             <div class="screen-content">
                 <section class="top-content">
                     <span class="button back">
