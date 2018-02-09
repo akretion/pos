@@ -10,6 +10,11 @@ class AccountInvoice(models.Model):
     _inherit = "account.invoice"
 
     pos_anonyme_invoice = fields.Boolean()
+    session_id = fields.Many2one('pos.session', string='Session',
+                                 select=1,
+                                 domain="[('state', '=', 'opened')]",
+                                 states={'draft': [('readonly', False)]},
+                                 )
 
     @api.multi
     def reconcile(
