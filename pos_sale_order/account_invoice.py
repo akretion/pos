@@ -4,6 +4,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from openerp import api, fields, models, _
+from openerp.exceptions import Warning as UserError
 
 
 class AccountInvoice(models.Model):
@@ -48,3 +49,24 @@ class AccountInvoice(models.Model):
         # Update the stored value (fields.function),
         # so we write to trigger recompute
         return self.write({})
+
+    @api.multi
+    def reconcile_with_pos_payment(
+            self):
+        for invoice in self:
+            if invoice.session_id:
+                if invoice.state == 'open':
+                    invoice.session_id._reconcile_invoice_with_pos_payment(
+                        invoice)
+                elif invoice.state == 'paid':
+                    raise UserError(
+                        _("Invoice is yet paid"))
+                else:
+                    raise UserError(
+                        _("You must validate invoice before reconcile it with"
+                          " pos payments"))
+            else:
+                raise UserError(
+                    _("No pos session linked to the invoice %s") %
+                    (invoice.number,))
+        return True
