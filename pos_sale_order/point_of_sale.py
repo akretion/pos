@@ -44,7 +44,7 @@ class SaleOrder(models.Model):
             'pos_anonym_journal', False)
         if pos_anonym_journal:
             res['journal_id'] = pos_anonym_journal.id
-        res['session_id'] = order.session_id
+        res['session_id'] = order.session_id.id
         return res
 
 
