@@ -34,18 +34,15 @@ class PayPosSaleOrder(models.TransientModel):
             #         return cash_journal
             if not cash_statement:
                 raise UserError(
-                    _('Error!'),
                     _('The session %s, do not contains cash statement opened.'
                       % sessions[0].name))
         else:
             raise UserError(
-                _('Error!'),
                 _('There is no pos session opened.'))
 
     @api.model
     def _default_amount(self):
         order_id = self.env.context.get('active_id')
-        import pdb; pdb.set_trace()
         if not order_id:
             return 0
         order = self.env['sale.order'].browse(order_id)
@@ -61,21 +58,19 @@ class PayPosSaleOrder(models.TransientModel):
     statement_id = fields.Many2one(
         'account.bank.statement', default=_default_statement_id)
     amount = fields.Float('Amount', digits=dp.get_precision('Sale Price'),
-        default=_default_amount)
+                          default=_default_amount)
     date = fields.Datetime('Payment Date', default=fields.Datetime.now)
     description = fields.Char('Description', size=64)
 
     @api.multi
     def pay_sale_order(self):
         """ Pay the sale order """
-        import pdb; pdb.set_trace()
         self.ensure_one()
         if len(self.env.context.get('active_ids', [])) > 1:
             raise UserError(
                 _('Error!'),
                 _('You can pay only one order .'))
         order_id = self.env.context.get('active_id')
-        pos_order = self.env['pos.order']
         payment_data = {
             'amount': self.amount,
             'payment_date': self.date,
@@ -83,9 +78,18 @@ class PayPosSaleOrder(models.TransientModel):
             'payment_name': self.description,
             'journal': self.statement_id.journal_id.id,
         }
-        statements = pos_order.add_payment(order_id, payment_data)
+        self.env['pos.order'].add_payment(order_id, payment_data)
         order = self.env['sale.order'].browse(order_id)
-        invoice = order.session_id._generate_invoice(
+        session = order.session_id
+        if not session:
+            uid = self.env.context.get('uid')
+            session = self.env['pos.session'].search([
+                ('state', '=', 'opened'), ('user_id', '=', uid)], limit=1)
+            if not session:
+                raise UserError(
+                    u"Il n'y a pas de session de PdV ouverte avec votre "
+                    u"utilisateur.\nVeuillez en ouvrir une pour poursuivre.")
+        invoice = session._generate_invoice(
             partner_id=order.partner_id.id,
             grouped=True, anonym_order=False, anonym_journal=True,
             orders=order)

@@ -338,6 +338,9 @@ class PosSession(models.Model):
             self, partner_id=False, grouped=False,
             anonym_order=True, anonym_journal=True,
             orders=False):
+        if not self:
+            raise UserError(
+                _("No POS session opened by your user. Please, open one."))
         self.ensure_one()
         sale_obj = self.env['sale.order']
         if not orders:
