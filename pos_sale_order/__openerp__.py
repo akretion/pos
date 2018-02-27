@@ -34,6 +34,8 @@
              'point_of_sale_view.xml',
              'data/res_partner_data.xml',
              'data/pos_config_data.xml',
+             'wizard/pay_pos_sale_order.xml',
+             'invoice_view.xml',
              ],
     'demo': [],
     'installable': True,

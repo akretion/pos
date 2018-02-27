@@ -28,7 +28,7 @@ class SaleOrder(models.Model):
     payment_ids = fields.Many2many(readonly=True)
     statement_ids = fields.One2many(
         'account.bank.statement.line',
-        'pos_so_statement_id', string='Payments',
+        'pos_so_statement_id', string='Pos Payments',
         states={'draft': [('readonly', False)]}, readonly=True)
 
     @api.multi
@@ -44,6 +44,7 @@ class SaleOrder(models.Model):
             'pos_anonym_journal', False)
         if pos_anonym_journal:
             res['journal_id'] = pos_anonym_journal.id
+        res['session_id'] = order.session_id.id
         return res
 
 
@@ -304,14 +305,14 @@ class PosSession(models.Model):
             invoices |= generated_invoices
             # anonym orders : generate grouped invoice for anonym patner
             # and reconcile it with pos payment
-            grouped_anonym_invoice = self._generate_invoice(
+            grouped_anonym_invoice = session._generate_invoice(
                 partner_id=partner_id,
                 grouped=True, anonym_order=True, anonym_journal=True)
             self._reconcile_invoice_with_pos_payment(grouped_anonym_invoice)
             invoices |= grouped_anonym_invoice
             # not anonym orders : generate invoices for not anonym patner
             # and reconcile their with pos payment
-            invoice_not_anonym = self._generate_invoice(
+            invoice_not_anonym = session._generate_invoice(
                 partner_id=partner_id,
                 grouped=False, anonym_order=False, anonym_journal=False)
             self._reconcile_invoice_with_pos_payment(invoice_not_anonym)
@@ -332,14 +333,21 @@ class PosSession(models.Model):
                 invoices |= order.invoice_ids
         return invoices
 
+    @api.multi
     def _generate_invoice(
             self, partner_id=False, grouped=False,
-            anonym_order=True, anonym_journal=True):
+            anonym_order=True, anonym_journal=True,
+            orders=False):
+        if not self:
+            raise UserError(
+                _("No POS session opened by your user. Please, open one."))
+        self.ensure_one()
         sale_obj = self.env['sale.order']
-        domains = {}
-        domains = self._get_so_domains(
-            domains, partner_id, anonym_order=anonym_order)
-        orders = sale_obj.search(domains)
+        if not orders:
+            domains = {}
+            domains = self._get_so_domains(
+                domains, partner_id, anonym_order=anonym_order)
+            orders = sale_obj.search(domains)
         orders = orders.filtered(lambda so: not so.invoice_exists)
         pos_anonym_journal = False
         if anonym_journal:
@@ -363,7 +371,10 @@ class PosSession(models.Model):
             invoice.write({'pos_anonyme_invoice': True})
         sale.signal_workflow('manual_invoice')
         invoice.signal_workflow('invoice_open')
-        invoice.write({'sale_ids': [(6, 0, sale.ids)]})
+        invoice.write({
+            'sale_ids': [(6, 0, sale.ids)],
+            'session_id': self.id
+        })
         return invoice
 
     def _reconcile_invoice_with_pos_payment(
