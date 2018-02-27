@@ -6,35 +6,158 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-26 17:34+0000\n"
-"PO-Revision-Date: 2015-02-26 18:41+0100\n"
-"Last-Translator: David BEAL <david.beal@akretion.com>\n"
-"Language-Team: Akretion <david.beal@akretion.com>\n"
-"Language: fr_FR\n"
+"POT-Creation-Date: 2018-02-27 21:49+0100\n"
+"PO-Revision-Date: 2018-02-27 22:10+0100\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
-"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 2.0.1\n"
 
 #. module: pos_sale_order
-#: code:addons/pos_sale_order/point_of_sale.py:187
+#: field:pay.pos.sale.order,amount:0
+msgid "Amount"
+msgstr "Montant"
+
+#. module: pos_sale_order
+#: field:pos.config,anonymous_partner_id:0
+msgid "Anonymous Partner"
+msgstr "Client anonyme"
+
+#. module: pos_sale_order
+#: model:ir.model,name:pos_sale_order.model_account_bank_statement
+msgid "Bank Statement"
+msgstr "Relevé bancaire"
+
+#. module: pos_sale_order
+#: model:ir.model,name:pos_sale_order.model_account_bank_statement_line
+msgid "Bank Statement Line"
+msgstr "Ligne de Relevé Bancaire"
+
+#. module: pos_sale_order
+#: view:pay.pos.sale.order:pos_sale_order.pay_pos_sale_order_view
+msgid "Caisse"
+msgstr "Caisse"
+
+#. module: pos_sale_order
+#: view:pay.pos.sale.order:pos_sale_order.pay_pos_sale_order_view
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/point_of_sale.py:237
 #, python-format
 msgid "Configuration Error!"
 msgstr "Erreur de paramétrage !"
 
 #. module: pos_sale_order
-#: code:addons/pos_sale_order/point_of_sale.py:205
-#: code:addons/pos_sale_order/pos_invoice.py:46
+#: field:pay.pos.sale.order,create_uid:0
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: pos_sale_order
+#: field:pay.pos.sale.order,create_date:0
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: pos_sale_order
+#: view:pay.pos.sale.order:pos_sale_order.pay_pos_sale_order_view
+msgid "Date"
+msgstr "Date"
+
+#. module: pos_sale_order
+#: view:pay.pos.sale.order:pos_sale_order.pay_pos_sale_order_view
+#: field:pay.pos.sale.order,description:0
+msgid "Description"
+msgstr "Description"
+
+#. module: pos_sale_order
+#: field:pay.pos.sale.order,display_name:0
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/point_of_sale.py:256
+#: code:addons/pos_sale_order/pos_invoice.py:50
+#: code:addons/pos_sale_order/wizard/pay_pos_sale_order.py:54
+#: code:addons/pos_sale_order/wizard/pay_pos_sale_order.py:71
 #, python-format
 msgid "Error!"
 msgstr "Erreur !"
 
 #. module: pos_sale_order
-#: code:addons/pos_sale_order/pos_invoice.py:46
+#: field:pay.pos.sale.order,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: pos_sale_order
+#: model:ir.model,name:pos_sale_order.model_account_invoice
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/account_invoice.py:63
+#, python-format
+msgid "Invoice is yet paid"
+msgstr "La facture est déjà payé"
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/account_invoice.py:44
+#, python-format
+msgid "Invoice partially paid: %s%s of %s%s (%s%s remaining)."
+msgstr "Facture payé partiellement : %s%s de %s%s (%s%s restant)."
+
+#. module: pos_sale_order
+#: field:pay.pos.sale.order,__last_update:0
+msgid "Last Modified on"
+msgstr "Modifié le"
+
+#. module: pos_sale_order
+#: field:pay.pos.sale.order,write_uid:0
+msgid "Last Updated by"
+msgstr "Modifié par"
+
+#. module: pos_sale_order
+#: field:pay.pos.sale.order,write_date:0
+msgid "Last Updated on"
+msgstr "Modifié le"
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/point_of_sale.py:343
+#, python-format
+msgid "No POS session opened by your user. Please, open one."
+msgstr ""
+"Aucune session PdV ouverte par votre utilisateur. Veuillez en ouvrir une."
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/point_of_sale.py:186
+#, python-format
+msgid ""
+"No cash statement found for this session. Unable to record returned cash."
+msgstr ""
+"Pas de journal de caisse trouvé pour cette session. Impossible d'encaisser "
+"le liquide retourné."
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/pos_invoice.py:52
 #, python-format
 msgid "No link to an invoice for %s., "
-msgstr "No link to an invoice for %s., "
+msgstr "Aucun lien vers une facture pour %s., "
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/account_invoice.py:70
+#, python-format
+msgid "No pos session linked to the invoice %s"
+msgstr "Aucune session PdV liée à cette facture %s"
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/wizard/pay_pos_sale_order.py:55
+#, python-format
+msgid "No thing to pay. Order is yet payed or it amount is 0"
+msgstr "Rien à payer. La commande est déjà payé ou le montant est à 0"
 
 #. module: pos_sale_order
 #: view:sale.order:pos_sale_order.view_sales_order_filter
@@ -42,9 +165,50 @@ msgid "POS"
 msgstr "PdV"
 
 #. module: pos_sale_order
+#: field:account.bank.statement.line,pos_so_statement_id:0
+msgid "POS SO statement"
+msgstr "Relevé de PdV"
+
+#. module: pos_sale_order
+#: view:pay.pos.sale.order:pos_sale_order.pay_pos_sale_order_view
+msgid "Paid Amount"
+msgstr "Montant payé"
+
+#. module: pos_sale_order
+#: view:pay.pos.sale.order:pos_sale_order.pay_pos_sale_order_view
+msgid "Pay"
+msgstr "Payer"
+
+#. module: pos_sale_order
+#: view:pay.pos.sale.order:pos_sale_order.pay_pos_sale_order_view
+msgid "Pay And Confirm Order"
+msgstr "Payer and confirmer la vente"
+
+#. module: pos_sale_order
+#: model:ir.actions.act_window,name:pos_sale_order.open_pay_pos_sale_order
+#: view:pay.pos.sale.order:pos_sale_order.pay_pos_sale_order_view
+msgid "Pay Pos Sale Order"
+msgstr "Payer les ventes du PdV"
+
+#. module: pos_sale_order
+#: field:pay.pos.sale.order,date:0
+msgid "Payment Date"
+msgstr "Date de paiement"
+
+#. module: pos_sale_order
 #: model:ir.model,name:pos_sale_order.model_pos_order
 msgid "Point of Sale"
 msgstr "Point de vente"
+
+#. module: pos_sale_order
+#: field:sale.order,statement_ids:0
+msgid "Pos Payments"
+msgstr "Paiements de PdV"
+
+#. module: pos_sale_order
+#: field:account.invoice,pos_anonyme_invoice:0
+msgid "Pos anonyme invoice"
+msgstr "Facture de PdV anonyme"
 
 #. module: pos_sale_order
 #: field:sale.order,pos_reference:0
@@ -52,9 +216,23 @@ msgid "Receipt Ref"
 msgstr "Réf PdV"
 
 #. module: pos_sale_order
-#: field:sale.order,from_pos:0
-msgid "Sale Order from Pos"
-msgstr "Commande de Vente depuis PdV"
+#: view:account.invoice:pos_sale_order.view_invoice_form_pos
+msgid ""
+"Reconcile invoice with pos payments registred in sale orders that generated "
+"this invoice"
+msgstr ""
+"Réconcilier la facture avec les paiements de PdV enregistrés dans les "
+"ventes qui ont généré cette facture."
+
+#. module: pos_sale_order
+#: view:account.invoice:pos_sale_order.view_invoice_form_pos
+msgid "Reconcile with pos payment"
+msgstr "Réconcilier avec les paiements de PdV"
+
+#. module: pos_sale_order
+#: view:sale.order:pos_sale_order.pay_sale_order_view_form
+msgid "Register Pos Payments"
+msgstr "Enregistré les paiements de PdV"
 
 #. module: pos_sale_order
 #: model:ir.model,name:pos_sale_order.model_sale_order
@@ -62,13 +240,35 @@ msgid "Sales Order"
 msgstr "Commandes de Vente"
 
 #. module: pos_sale_order
-#: field:sale.order,session_id:0
+#: field:account.invoice,session_id:0 field:sale.order,session_id:0
 msgid "Session"
 msgstr "Session"
 
 #. module: pos_sale_order
-#: code:addons/pos_sale_order/point_of_sale.py:186
-#, fuzzy, python-format
+#: field:pay.pos.sale.order,statement_id:0
+msgid "Statement id"
+msgstr "Relevé"
+
+#. module: pos_sale_order
+#: sql_constraint:sale.order:0
+msgid "The pos_reference must be uniq per session"
+msgstr "La reference de PdV doit être unique par sesssion"
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/wizard/pay_pos_sale_order.py:37
+#, python-format
+msgid "The session %s, do not contains cash statement opened."
+msgstr "La session %s, ne contient pas de journal de caisse."
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/wizard/pay_pos_sale_order.py:41
+#, python-format
+msgid "There is no pos session opened."
+msgstr "Il n'y a pas de session de PdV ouverte."
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/point_of_sale.py:234
+#, python-format
 msgid ""
 "There is no receivable account defined to make payment for the partner: \"%s"
 "\" (id:%d)."
@@ -77,13 +277,48 @@ msgstr ""
 "partenaire: \"%s\" (id:%d)."
 
 #. module: pos_sale_order
-#: code:addons/pos_sale_order/point_of_sale.py:184
-#, fuzzy, python-format
+#: code:addons/pos_sale_order/point_of_sale.py:231
+#, python-format
 msgid "There is no receivable account defined to make payment."
 msgstr "Il n'y a pas de compte réception définie pour faire le paiement"
 
 #. module: pos_sale_order
-#: code:addons/pos_sale_order/point_of_sale.py:206
+#: field:pos.config,warehouse_id:0
+msgid "Warehouse"
+msgstr "Entrepôt"
+
+#. module: pos_sale_order
+#: model:ir.model,name:pos_sale_order.model_pay_pos_sale_order
+msgid "Wizard to generate a banck statement payment from"
+msgstr "Assistant pour générer un relevé bancaire de paiement"
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/wizard/pay_pos_sale_order.py:72
+#, python-format
+msgid "You can pay only one order ."
+msgstr "Vous pouvez payer seulement une commande."
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/point_of_sale.py:257
 #, python-format
 msgid "You have to open at least one cashbox."
 msgstr "Vous devez ouvrir au moins une caisse."
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/account_invoice.py:66
+#, python-format
+msgid "You must validate invoice before reconcile it with pos payments"
+msgstr ""
+"Vous devez valider la facture avant de la réconcilier avec les paiements du "
+"point de vente"
+
+#. module: pos_sale_order
+#: view:pay.pos.sale.order:pos_sale_order.pay_pos_sale_order_view
+msgid "or"
+msgstr "ou"
+
+#. module: pos_sale_order
+#: code:addons/pos_sale_order/point_of_sale.py:192
+#, python-format
+msgid "return"
+msgstr "retour"
