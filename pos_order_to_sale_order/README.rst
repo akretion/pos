@@ -111,6 +111,7 @@ Contributors
 ------------
 
 * Sylvain Le Gal (https://twitter.com/legalsylvain)
+* Raphaël Reverdy (https://github.com/hparfr)
 
 Funders
 -------
