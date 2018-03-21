@@ -15,11 +15,11 @@ class SaleOrder(models.Model):
         session = session_obj.browse(order_data['pos_session_id'])
         res = self.onchange_partner_id(order_data['partner_id'])['value']
         res.update({
-            'partner_id':       order_data['partner_id'] or False,
-            'origin':           _("Point of Sale %s") % (session.name),
+            'partner_id': order_data['partner_id'] or False,
+            'origin': _("Point of Sale %s") % (session.name),
             'client_order_ref': order_data['name'],
-            'user_id':          order_data['user_id'] or False,
-            'order_line':       [],
+            'user_id': order_data['user_id'] or False,
+            'order_line': [],
         })
         for line_data in order_data['lines']:
             res['order_line'].append([
@@ -34,9 +34,9 @@ class SaleOrder(models.Model):
             order_data['pricelist_id'], line_data['product_id'],
             qty=line_data['qty'], partner_id=order_data['partner_id'])['value']
         res.update({
-            'product_id':       line_data['product_id'],
-            'product_uom_qty':  line_data['qty'],
-            'discount':         line_data['discount'],
+            'product_id': line_data['product_id'],
+            'product_uom_qty': line_data['qty'],
+            'discount': line_data['discount'],
         })
         return res
 
