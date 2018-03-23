@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2017 - Today: GRAP (http://www.grap.coop)
 # @author: Sylvain LE GAL (https://twitter.com/legalsylvain)
+# @author: Raphael Reverdy (https://akretion.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import models, fields
@@ -9,19 +10,23 @@ from odoo import models, fields
 class PosConfig(models.Model):
     _inherit = 'pos.config'
 
-    iface_create_draft_sale_order = fields.Boolean(
-        string='Create Draft Sale Orders', default=True,
-        help="If checked, the cashier will have the possibility to create"
-        " a draft Sale Order, based on the current draft PoS Order.")
+    iface_allow_pos_order = fields.Boolean(
+        string='PoS Orders', default=True,
+        help="Allow PoS Orders")
 
-    iface_create_confirmed_sale_order = fields.Boolean(
-        string='Create Confirmed Sale Orders', default=True,
-        help="If checked, the cashier will have the possibility to create"
-        " a confirmed Sale Order, based on the current draft PoS Order.")
+    iface_allow_draft_order = fields.Boolean(
+        string='Quotations', default=True,
+        help="Allow creation of quotations from the PoS.",
+        old_name="iface_create_draft_sale_order")
 
-    iface_create_delivered_sale_order = fields.Boolean(
-        string='Create Delivered Sale Orders', default=True,
-        help="If checked, the cashier will have the possibility to create"
-        " a confirmed sale Order, based on the current draft PoS Order.\n"
-        " the according picking will be marked as delivered. Only invoices"
-        " process will be possible.")
+    iface_allow_confirmed_order = fields.Boolean(
+        string='Sale Orders', default=True,
+        help="Allow creation of sale orders from the PoS.",
+        old_name="iface_create_confirmed_sale_order")
+
+    iface_allow_delivered_order = fields.Boolean(
+        string='Delivered Sale Orders', default=True,
+        help="Allow creation of delivered sale orders."
+        " The according picking will be marked as delivered. Only invoices"
+        " process will be possible.",
+        old_name="iface_create_delivered_sale_order")
