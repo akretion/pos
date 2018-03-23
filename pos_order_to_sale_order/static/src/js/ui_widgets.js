@@ -63,9 +63,9 @@ odoo.define('pos_order_to_sale_order.ui_widgets', function (require) {
             this._super();
             this.$el.click(function(evt){
                 if (stateMachine.current.name == 'poso') {
-                    stateMachine.exit('picking');
+                    stateMachine.exit('delivered');
                 } else { 
-                    stateMachine.toggle('picking');
+                    stateMachine.toggle('delivered');
                 } 
             });
         },

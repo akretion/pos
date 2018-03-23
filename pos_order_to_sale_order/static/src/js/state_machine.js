@@ -9,7 +9,7 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
     var stateMachine = { //State Machine
         listeners: [],
         allowed_states: [],
-        // possible states : poso, draft, order, picking
+        // possible states : poso, draft, confirmed, delivered
         current: {
             name: 'poso',
             isPayable: true,
@@ -30,12 +30,12 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
                 next.isPosOrder = true;
                 next.isPicking = true;
             }
-            if (target == 'picking') {
+            if (target == 'delivered') {
                 next.isPayable = true;
                 next.isPosOrder = false;
                 next.isPicking = true;
             }
-            if (target == 'order') {
+            if (target == 'confirmed') {
                 next.isPayable = true;
                 next.isPosOrder = false;
                 next.isPicking = false;
@@ -43,21 +43,21 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
             this.notifiy(next);
         },
         exit: function(target) {
-            var order = 'order';
+            var fallback = 'confirmed';
             var possibles = [];
             var map = {};
-            if (this.allowed_states.indexOf('order') == -1) {
-                //order is not allowed, fallback to something else.
+            if (this.allowed_states.indexOf('confirmed') == -1) {
+                //confirmed is not allowed, fallback to something else.
                 possibles = this.allowed_states.filter(function (state) {
                     return state != target;
                 }); //possibles = allowed_states - target - order
-                order = possibles.shift(); //take first
+                fallback = possibles.shift(); //take first
             }
             map = {
-                'poso': order,
-                'order': 'poso',
-                'picking': order,
-                'draft': order
+                'poso': fallback,
+                'confirmed': 'poso',
+                'delivered': fallback,
+                'draft': fallback
             };
             this.enter(map[target]);
         },

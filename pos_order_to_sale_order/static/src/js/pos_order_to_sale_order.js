@@ -62,10 +62,10 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                 allowed_states.push('draft');
             }
             if (this.pos.config.iface_allow_confirmed_order) {
-                allowed_states.push('order');
+                allowed_states.push('confirmed');
             }
             if (this.pos.config.iface_allow_delivered_order) {
-                allowed_states.push('picking');
+                allowed_states.push('delivered');
             }
             if (this.pos.config.iface_allow_pos_order) {
                 allowed_states.push('poso');
@@ -86,11 +86,11 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
             if (allowed_states.indexOf('draft') != -1) {
                 this.payLater.prependTo(this.$('.paymentmethods'));
             }
-            if (allowed_states.indexOf('picking') != -1) {
+            if (allowed_states.indexOf('delivered') != -1) {
                 this.deliveryLater.appendTo(this.$('.payment-buttons'));
             }
             if (allowed_states.indexOf('poso') != -1 && allowed_states.length > 1) {
-                // sales orders (draft|order|picking) AND PoS order
+                // sales orders (draft|confirmed|delivered) AND PoS order
                 this.orderType.prependTo(this.$('.paymentmethods'));
             }
         },
@@ -157,7 +157,7 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
         // Overload This function to send custom sale order data to server
         prepare_create_sale_order: function(order) {
             var res = order.export_as_JSON();
-            res.sale_order_state = this.sale_order_state;
+            res.sale_order_state = stateMachine.current.name;
             return res;
         },
         // Overload this function to make custom action after Sale order
