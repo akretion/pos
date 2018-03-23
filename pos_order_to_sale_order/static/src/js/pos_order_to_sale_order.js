@@ -1,171 +1,186 @@
 /******************************************************************************
     Copyright (C) 2017 - Today: GRAP (http://www.grap.coop)
     @author: Sylvain LE GAL (https://twitter.com/legalsylvain)
+    @author: Raphaël Reverdy (https://akretion.com)
     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
  *****************************************************************************/
-
-openerp.pos_order_to_sale_order = function(instance, local) {
-
+odoo.define('pos_order_to_sale_order.product_screen', function (require) {
     "use strict";
+    var translation = require('web.translation');
+    var _t = translation._t;
+    var ProductScreenWidget = require('point_of_sale.screens');
+    var Model = require('web.DataModel');
+    var stateMachine = require('pos_order_to_sale_order.state_machine');
+    var uiWidgets = require('pos_order_to_sale_order.ui_widgets');
 
-    var module = instance.point_of_sale;
-    var _t = instance.web._t;
-
-    /*************************************************************************
-        New Widget CreateSaleOrderButtonWidget:
-            * On click, check if there is a customer defined,
-              ask confirmation call server to create sale order, and delete
-              the current order. 
-    */
-    module.CreateSaleOrderButtonWidget = module.PosBaseWidget.extend({
-        template: 'CreateSaleOrderButtonWidget',
-
-        init: function(parent, options){
+    ProductScreenWidget.PaymentScreenWidget.include({
+        init: function(parent, options) {
             this._super(parent, options);
-            this.sale_order_state = options.sale_order_state;
-            if (this.sale_order_state == 'draft') {
-                this.display_text = _t("Create Draft Order");
-                this.confirmation_message = _t('Create Draft Sale Order and discard the current PoS Order?');
-                this.confirmation_comment = _t("This operation will permanently discard the current PoS Order and create a draft Sale Order, based on the current order lines. Note if you have manually changed unit prices for some products, this changes will not been taken into account in the sale order.");
-            }
-            else if (options.sale_order_state == 'confirmed') {
-                this.display_text = _t("Create Confirmed Order");
-                this.confirmation_message = _t('Create Confirmed Sale Order and discard the current PoS Order?');
-                this.confirmation_comment = _t("This operation will permanently discard the current PoS Order and create a confirmed Sale Order, based on the current order lines. Note if you have manually changed unit prices for some products, this changes will not been taken into account in the sale order, and should be done manually on the invoice again.");
-            }
-            else if (options.sale_order_state == 'delivered') {
-                this.display_text = _t("Create Delivered Order");
-                this.confirmation_message = _t('Create Delivered Sale Order and discard the current PoS Order?');
-                this.confirmation_comment = _t("This operation will permanently discard the current PoS Order and create a confirmed Sale Order, based on the current order lines. The according picking will be marked as delivered.\n Note if you have manually changed unit prices for some products, this changes will not been taken into account in the sale order, and should be done manually on the invoice again.");
-            }
+            this.init_listeners();
+            this.init_config();
+            this.init_buttons();
         },
-
-        renderElement: function() {
+        init_listeners: function() {
             var self = this;
-            this._super();
-            this.$el.click(function(){
-                var current_order = self.pos.get('selectedOrder');
-                // Prevent empty delivery order
-                if (current_order.get('orderLines').length == 0){
-                    self.pos_widget.screen_selector.show_popup('error',{
-                        'message': _t('Empty Order'),
-                        'comment': _t('There must be at least one product in your order to create Sale Order.'),
-                    });
+            stateMachine.listeners.push(function (next, prev) {
+                //show or hide numpad and payement method
+                //based on isPayable
+                var action = null;
+                if (next.isPayable == prev.isPayable) {
+                    //nothing to do return early
                     return;
                 }
-                // Check Customer
-                if (!current_order.get('client')){
-                    self.pos_widget.screen_selector.show_popup('error',{
-                        'message': _t('No customer defined'),
-                        'comment': _t('You should select a customer in order to create a Sale Order. Please select one by clicking the order tab.'),
-                    });
-                    return;
+                if (next.isPayable && !prev.isPayable) {
+                    action = 'show';
+                } else {
+                    action = 'hide';
                 }
-                self.pos.pos_widget.screen_selector.show_popup('confirm', {
-                    message: self.confirmation_message,
-                    comment: self.confirmation_comment,
-                    confirm: function(){
-                        var SaleOrderModel = new instance.web.Model('sale.order');
-                        current_order.sale_order_state = self.sale_order_state;
-                        SaleOrderModel.call('create_order_from_pos', [self.prepare_create_sale_order(current_order)]
-                        ).then(function (result) {
-                            self.hook_create_sale_order_success(result);
-                        }).fail(function (error, event){
-                            self.hook_create_sale_order_error(error, event);
-                        });
-                        
-                    },
-                });
+                self.$el.find('.payment-numpad')[action]();
+                self.$el.find('.paymentmethod')[action]();
+            });
+            stateMachine.listeners.push(function (next, prev) {
+                //remove payment line is order is not payable
+                if (!next.isPayable && prev.isPayable) {
+                    // remove all paymentlines
+                    var order = self.pos.get_order();
+                    var lines = order.get_paymentlines();
+                    lines.forEach(function (line) {
+                        order.remove_paymentline(line);
+                    });
+                    self.reset_input();
+                    self.render_paymentlines();
+                    //should be done after reset !
+                    self.$el.find('.message').hide();
+                } else {
+                    self.$el.find('.message').show();
+                }
             });
         },
-
+        init_config: function () {
+            var allowed_states = stateMachine.allowed_states;
+            if (this.pos.config.iface_allow_draft_order) {
+                allowed_states.push('draft');
+            }
+            if (this.pos.config.iface_allow_confirmed_order) {
+                allowed_states.push('order');
+            }
+            if (this.pos.config.iface_allow_delivered_order) {
+                allowed_states.push('picking');
+            }
+            if (this.pos.config.iface_allow_pos_order) {
+                allowed_states.push('poso');
+            }
+        },
+        init_buttons: function () {
+            this.deliveryLater = new uiWidgets.DeliveryButtonWidget(parent, {});
+            this.payLater = new uiWidgets.PayLaterButtonWidget(parent, {});
+            this.orderType = new uiWidgets.OrderTypeButtonWidget(parent, {});
+        },
+        renderElement: function() {
+            this._super();
+            var allowed_states = stateMachine.allowed_states;
+            if (allowed_states.length == 1) {
+                //no choices : no widget to display
+                return;
+            }
+            if (allowed_states.indexOf('draft') != -1) {
+                this.payLater.prependTo(this.$('.paymentmethods'));
+            }
+            if (allowed_states.indexOf('picking') != -1) {
+                this.deliveryLater.appendTo(this.$('.payment-buttons'));
+            }
+            if (allowed_states.indexOf('poso') != -1 && allowed_states.length > 1) {
+                // sales orders (draft|order|picking) AND PoS order
+                this.orderType.prependTo(this.$('.paymentmethods'));
+            }
+        },
+        order_is_valid: function(force_validation) {
+            //there is no payment on draft
+            //payment is not mandatory on sale orders
+            //the trick to pass validation without payment
+            //is to set invoicing = false
+            //and patch order.is_paid
+            //see screens.js:1933
+            //we revert it back at the end to limit side effects.
+            var res = null;
+            var order = this.pos.get_order();
+            var prev_is_paid = order.is_paid;
+            var prev_invoicing = this.invoicing;
+            if (!stateMachine.current.isPosOrder) {
+                order.is_paid = function() {
+                    return true;
+                };
+                this.invoicing = false;
+            }
+            res = this._super(force_validation);
+            if (!stateMachine.current.isPosOrder) {
+                //if something bad happends, so user
+                //want to save it as PoS Order
+                order.is_paid = prev_is_paid;
+                this.invoicing = prev_invoicing;
+            }
+            return res;
+        },
+        validate_order: function(force_validation) {
+            // use our flow only if sale order
+            if (stateMachine.current.isPosOrder) {
+                return this._super(force_validation);
+            }
+            //client is mandatory for SO
+            if(!this.pos.get_order().get_client()){
+                this.gui.show_popup('confirm', {
+                    'title': _t('Please select the Customer'),
+                    'body': _t('You need to select the customer before you can invoice an order.'),
+                    confirm: function(){
+                        this.gui.show_screen('clientlist');
+                    },
+                });
+                return false;
+            }
+            if (this.order_is_valid(force_validation)) {
+                return this.finalize_validation_sale_order();
+            }
+        },
+        finalize_validation_sale_order: function() {
+            //here we save the order to backend
+            var self = this;
+            var current_order = self.pos.get('selectedOrder');
+            return new Model('sale.order').call(
+                'create_order_from_pos',
+                [self.prepare_create_sale_order(current_order)]
+            ).then(function (result) {
+                return self.hook_create_sale_order_success(result);
+            }).fail(function (error, event){
+                return self.hook_create_sale_order_error(error);
+            });
+        },
         // Overload This function to send custom sale order data to server
         prepare_create_sale_order: function(order) {
             var res = order.export_as_JSON();
             res.sale_order_state = this.sale_order_state;
             return res;
         },
-
         // Overload this function to make custom action after Sale order
         // Creation success
         hook_create_sale_order_success: function(result) {
-            this.pos.get('selectedOrder').destroy();
+            return this.pos.get('selectedOrder').destroy();
         },
-
         // Overload this function to make custom action after Sale order
         // Creation fail
-        hook_create_sale_order_error: function(error, event) {
-            event.preventDefault();
-            if(error.code === 200 ){
+        hook_create_sale_order_error: function(error) {
+            if (error.code === 200) {
                 // Business Logic Error, not a connection problem
-                this.pos_widget.screen_selector.show_popup('error-traceback',{
+                this.gui.show_popup('error-traceback', {
                     message: error.data.message,
                     comment: error.data.debug,
                 });
-            }
-            else{
+            } else {
                 // connexion problem
-                this.pos_widget.screen_selector.show_popup('error',{
+                this.gui.show_popup('error', {
                     message: _t('The order could not be sent'),
                     comment: _t('Check your internet connection and try again.'),
                 });
             }
-
-        },
-
-    });
-
-
-    /*************************************************************************
-        Extend PosWidget:
-            * Create new buttons, depending of the configuration
-    */
-    module.PosWidget = module.PosWidget.extend({
-        build_widgets: function() {
-            this._super();
-            if (this.pos.config.iface_create_draft_sale_order){
-                this.create_draft_sale_order_button = new module.CreateSaleOrderButtonWidget(
-                    this, {'sale_order_state': 'draft'});
-                this.create_draft_sale_order_button.appendTo(this.pos_widget.$('ul.orderlines'));
-            }
-            if (this.pos.config.iface_create_confirmed_sale_order){
-                this.create_confirmed_sale_order_button = new module.CreateSaleOrderButtonWidget(
-                    this, {'sale_order_state': 'confirmed'});
-                this.create_confirmed_sale_order_button.appendTo(this.pos_widget.$('ul.orderlines'));
-            }
-            if (this.pos.config.iface_create_delivered_sale_order){
-                this.create_delivered_sale_order_button = new module.CreateSaleOrderButtonWidget(
-                    this, {'sale_order_state': 'delivered'});
-                this.create_delivered_sale_order_button.appendTo(this.pos_widget.$('ul.orderlines'));
-            }
         },
     });
-
-
-    /*************************************************************************
-        Extend OrderWidget:
-            Overload renderElement, to display buttons when the order change.
-    */
-    module.OrderWidget = module.OrderWidget.extend({
-        renderElement: function(scrollbottom){
-            this._super(scrollbottom);
-            if (this.pos_widget.create_draft_sale_order_button) {
-                this.pos_widget.create_draft_sale_order_button.appendTo(
-                    this.pos_widget.$('ul.orderlines')
-                );
-            }
-            if (this.pos_widget.create_confirmed_sale_order_button) {
-                this.pos_widget.create_confirmed_sale_order_button.appendTo(
-                    this.pos_widget.$('ul.orderlines')
-                );
-            }
-            if (this.pos_widget.create_delivered_sale_order_button) {
-                this.pos_widget.create_delivered_sale_order_button.appendTo(
-                    this.pos_widget.$('ul.orderlines')
-                );
-            }
-
-        }
-    });
-
-};
+});
