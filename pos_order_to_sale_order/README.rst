@@ -15,7 +15,7 @@ creation from the Point of Sale.
 In the POS UI, buttons has been added to create a sale order and discard
 the current POS order.
 
-This module is usefull in many cases, for exemple :
+This module is useful in many cases, for example :
 
 
 * take quotations with a very simple interface
@@ -27,35 +27,39 @@ This module is usefull in many cases, for exemple :
   to keep your stock value correct and to create a unique invoice periodically.
 
 
-Four options are availables:
+Four options are available:
 
 #. '**Allow PoS order**'
-  A PoS Order is the default type of order (opposed to sale orders).
-  If you want to use only sales order, uncheck this option.
+
+   A PoS Order is the default type of order (opposed to sale orders).
+   If you want to use only sales order, uncheck this option.
 
 #. '**Allow draft order**'
-  A draft sale order is a quotation. 
-  It can be changed and confirmed later from the backend.
-  No payment can be taken with draft orders.
 
-.. figure:: static/description/pos_create_picking_option_1.png
-   :width: 800 px
+   A draft sale order is a quotation. 
+   It can be changed and confirmed later from the backend.
+   No payment can be taken with draft orders.
+
+   .. figure:: static/description/pos_create_picking_option_1.png
+    :width: 800 px
 
 #. '**Allow confirmed order**'
-  A confirmed sale order without picking.
-  Usefull if you don't manage stock or sell services otherwise
-  use 'delivered picking'.
 
-.. figure:: static/description/pos_create_picking_option_2.png
-   :width: 800 px
+   A confirmed sale order without picking.
+   Useful if you don't manage stock or sell services otherwise
+   use 'delivered picking'.
+
+   .. figure:: static/description/pos_create_picking_option_2.png
+    :width: 800 px
 
 #. '**Allow delivered picking**'
-  A sale order will be created and confirmed. The associated picking
-  will be marked as delivered.
-  Use this option if you delivery your customer frequently and bill him periodically
 
-.. figure:: static/description/pos_create_picking_option_3.png
-   :width: 800 px
+   A sale order will be created and confirmed. The associated picking
+   will be marked as delivered.
+   Use this option if you delivery your customer frequently and bill him periodically
+
+   .. figure:: static/description/pos_create_picking_option_3.png
+    :width: 800 px
 
 If multiple options are activated, buttons will appear on the payment screen.
 
@@ -66,7 +70,7 @@ Configuration
 To configure this module, you need to:
 
 #. Go to Point Of Sale / Configuration / Point of Sale
-#. Select the desired default behaviour
+#. Select the desired default behavior
 
 .. figure:: static/description/pos_config_form.png
    :width: 800 px
@@ -81,14 +85,15 @@ Usage
 Technical Notes
 ===============
 
-* Some hooks are defined in the JS file, to define custom behaviour after
+* Some hooks are defined in the JS file, to define custom behavior after
   having created the sale order (and the stock picking).
 
 * Some prepare functions are available in the sale.order model, to overload
   the creation of the sale order.
 
-* An additionnal, not displayed option, is to allow payment for sale orders.
-It requires an additionnal module (not yet written) to handle it correctly.
+* An additional, not displayed option, is to allow payment for sale orders.
+  It requires an additinnal module (not yet written) to handle it correctly.
+
 
 
 Known issues / Roadmap

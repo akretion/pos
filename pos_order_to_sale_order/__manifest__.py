@@ -22,6 +22,9 @@
     ],
     'demo': [
         'demo/res_groups.xml',
+        'demo/product_template.xml',
+        'demo/sale_order.xml',
+        'demo/stock_picking_type.xml',
     ],
     'qweb': [
         'static/src/xml/pos_order_to_sale_order.xml',
