@@ -33,7 +33,6 @@ class SaleOrder(models.Model):
             'product_uom_qty': line_data['qty'],
             'discount': line_data['discount'],
             'price_unit': line_data['price_unit'],
-            'price_unit': line_data['price_unit'],
             'order_id': sale_order.id,
         }
         temp = line_obj.new(vals)

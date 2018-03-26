@@ -99,6 +99,7 @@ Technical Notes
 Known issues / Roadmap
 ======================
 
+* Demo not ported yet. It was non functionnal before migration.
 * Because of the poor design of the Odoo Point of Sale, some basic features
   are not available by default, like pricelist, fiscal position, etc ...
   For that reason, unit price will be recomputed by default, when creating the
