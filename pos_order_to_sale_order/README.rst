@@ -40,26 +40,17 @@ Four options are available:
    It can be changed and confirmed later from the backend.
    No payment can be taken with draft orders.
 
-   .. figure:: static/description/pos_create_picking_option_1.png
-    :width: 800 px
-
 #. '**Allow confirmed order**'
 
    A confirmed sale order without picking.
    Useful if you don't manage stock or sell services otherwise
    use 'delivered picking'.
 
-   .. figure:: static/description/pos_create_picking_option_2.png
-    :width: 800 px
-
 #. '**Allow delivered picking**'
 
    A sale order will be created and confirmed. The associated picking
    will be marked as delivered.
    Use this option if you delivery your customer frequently and bill him periodically
-
-   .. figure:: static/description/pos_create_picking_option_3.png
-    :width: 800 px
 
 If multiple options are activated, buttons will appear on the payment screen.
 
@@ -72,11 +63,16 @@ To configure this module, you need to:
 #. Go to Point Of Sale / Configuration / Point of Sale
 #. Select the desired default behavior
 
-.. figure:: static/description/pos_config_form.png
-   :width: 800 px
 
 Usage
 =====
+
+In the PoS, on the payment screen, new buttons will appear according
+ to options set in the configuration.
+
+.. figure:: static/description/pos_order_to_sale_order.png
+   :width: 800 px
+
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
