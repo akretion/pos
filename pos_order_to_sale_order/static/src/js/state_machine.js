@@ -8,7 +8,8 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
 
     var stateMachine = { //State Machine
         listeners: [],
-        allowed_states: [],
+        allowPayment: false,
+        allowedStates: [],
         // possible states : poso, draft, confirmed, delivered
         current: {
             name: 'poso',
@@ -40,17 +41,17 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
                 next.isPosOrder = false;
                 next.isPicking = false;
             }
-            this.notifiy(next);
+            this.notify(next);
         },
         exit: function(target) {
             var fallback = 'confirmed';
             var possibles = [];
             var map = {};
-            if (this.allowed_states.indexOf('confirmed') == -1) {
+            if (this.allowedStates.indexOf('confirmed') == -1) {
                 //confirmed is not allowed, fallback to something else.
-                possibles = this.allowed_states.filter(function (state) {
+                possibles = this.allowedStates.filter(function (state) {
                     return state != target;
-                }); //possibles = allowed_states - target - order
+                }); //possibles = allowedStates - target - order
                 fallback = possibles.shift(); //take first
             }
             map = {
@@ -68,14 +69,15 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
                 this.enter(target);
             }
         },
-        notifiy: function(next) {
+        notify: function(next) {
             var prev = this.current;
-            this.current = next;
+            this.current = next || prev;
             this.listeners.forEach(function (cb) {
                 cb(next, prev);
             }, this);
         }
     };
+
     window.stateMachine = stateMachine;
     return stateMachine;
 });

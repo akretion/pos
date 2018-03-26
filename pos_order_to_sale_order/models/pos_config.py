@@ -30,3 +30,8 @@ class PosConfig(models.Model):
         " The according picking will be marked as delivered. Only invoices"
         " process will be possible.",
         old_name="iface_create_delivered_sale_order")
+
+    iface_allow_order_payment = fields.Boolean(
+        # require an additional module to link payment to sale orders
+        string='Allow Sale Order Payments', default=False,
+        help="Accept payments for confirmed and delivered orders.")

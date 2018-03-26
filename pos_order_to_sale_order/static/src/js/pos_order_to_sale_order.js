@@ -23,14 +23,10 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
         init_listeners: function() {
             var self = this;
             stateMachine.listeners.push(function (next, prev) {
-                //show or hide numpad and payement method
+                //show or hide numpad and payment method
                 //based on isPayable
                 var action = null;
-                if (next.isPayable == prev.isPayable) {
-                    //nothing to do return early
-                    return;
-                }
-                if (next.isPayable && !prev.isPayable) {
+                if (stateMachine.allowPayment && next.isPayable && !prev.isPayable) {
                     action = 'show';
                 } else {
                     action = 'hide';
@@ -39,8 +35,11 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                 self.$el.find('.paymentmethod')[action]();
             });
             stateMachine.listeners.push(function (next, prev) {
-                //remove payment line is order is not payable
-                if (!next.isPayable && prev.isPayable) {
+                //remove payment line if order is not payable
+                //or if payment is not allowed
+                if (stateMachine.allowPayment && next.isPayable && !prev.isPayable) {
+                    self.$el.find('.message').show();
+                } else {
                     // remove all paymentlines
                     var order = self.pos.get_order();
                     var lines = order.get_paymentlines();
@@ -51,24 +50,25 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                     self.render_paymentlines();
                     //should be done after reset !
                     self.$el.find('.message').hide();
-                } else {
-                    self.$el.find('.message').show();
                 }
             });
         },
         init_config: function () {
-            var allowed_states = stateMachine.allowed_states;
+            var allowedStates = stateMachine.allowedStates;
             if (this.pos.config.iface_allow_draft_order) {
-                allowed_states.push('draft');
+                allowedStates.push('draft');
             }
             if (this.pos.config.iface_allow_confirmed_order) {
-                allowed_states.push('confirmed');
+                allowedStates.push('confirmed');
             }
             if (this.pos.config.iface_allow_delivered_order) {
-                allowed_states.push('delivered');
+                allowedStates.push('delivered');
             }
             if (this.pos.config.iface_allow_pos_order) {
-                allowed_states.push('poso');
+                allowedStates.push('poso');
+            }
+            if (this.pos.config.iface_allow_payment) {
+                stateMachine.allowPayment = true;
             }
         },
         init_buttons: function () {
@@ -78,21 +78,22 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
         },
         renderElement: function() {
             this._super();
-            var allowed_states = stateMachine.allowed_states;
-            if (allowed_states.length == 1) {
+            var allowedStates = stateMachine.allowedStates;
+            if (allowedStates.length == 1) {
                 //no choices : no widget to display
                 return;
             }
-            if (allowed_states.indexOf('draft') != -1) {
+            if (allowedStates.indexOf('draft') != -1) {
                 this.payLater.prependTo(this.$('.paymentmethods'));
             }
-            if (allowed_states.indexOf('delivered') != -1) {
+            if (allowedStates.indexOf('delivered') != -1) {
                 this.deliveryLater.appendTo(this.$('.payment-buttons'));
             }
-            if (allowed_states.indexOf('poso') != -1 && allowed_states.length > 1) {
+            if (allowedStates.indexOf('poso') != -1 && allowedStates.length > 1) {
                 // sales orders (draft|confirmed|delivered) AND PoS order
                 this.orderType.prependTo(this.$('.paymentmethods'));
             }
+            stateMachine.notify(); //start with stable state
         },
         order_is_valid: function(force_validation) {
             //there is no payment on draft
