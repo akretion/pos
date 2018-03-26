@@ -13,6 +13,7 @@
     'depends': [
         'point_of_sale',
         'sale',
+        'onchange_helper',
     ],
     'website': 'https://odoo-community.org/',
     'data': [
