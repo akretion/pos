@@ -26,7 +26,7 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                 //show or hide numpad and payment method
                 //based on isPayable
                 var action = null;
-                if (stateMachine.allowPayment && next.isPayable && !prev.isPayable) {
+                if (next.isPayable && !prev.isPayable) {
                     action = 'show';
                 } else {
                     action = 'hide';
@@ -37,7 +37,7 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
             stateMachine.listeners.push(function (next, prev) {
                 //remove payment line if order is not payable
                 //or if payment is not allowed
-                if (stateMachine.allowPayment && next.isPayable && !prev.isPayable) {
+                if (next.isPayable && !prev.isPayable) {
                     self.$el.find('.message').show();
                 } else {
                     // remove all paymentlines
@@ -151,7 +151,7 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                 [self.prepare_create_sale_order(current_order)]
             ).then(function (result) {
                 return self.hook_create_sale_order_success(result);
-            }).fail(function (error, event){
+            }).fail(function (error){
                 return self.hook_create_sale_order_error(error);
             });
         },

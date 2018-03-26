@@ -41,6 +41,7 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
                 next.isPosOrder = false;
                 next.isPicking = false;
             }
+            next.isPayable = next.isPayable && this.allowPayment;
             this.notify(next);
         },
         exit: function(target) {
@@ -73,7 +74,7 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
             var prev = this.current;
             this.current = next || prev;
             this.listeners.forEach(function (cb) {
-                cb(next, prev);
+                cb(this.current, prev);
             }, this);
         }
     };
