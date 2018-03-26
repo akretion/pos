@@ -87,6 +87,9 @@ Technical Notes
 * Some prepare functions are available in the sale.order model, to overload
   the creation of the sale order.
 
+* An additionnal, not displayed option, is to allow payment for sale orders.
+It requires an additionnal module (not yet written) to handle it correctly.
+
 
 Known issues / Roadmap
 ======================
