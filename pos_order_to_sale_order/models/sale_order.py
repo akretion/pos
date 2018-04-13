@@ -52,14 +52,21 @@ class SaleOrder(models.Model):
             self.env['sale.order.line'].create(line_vals)
 
         # Confirm Sale Order
-        if order_data['sale_order_state'] in ['confirmed', 'delivered']:
+        if order_data['sale_order_state'] in\
+                ['confirmed', 'delivered', 'to_invoice']:
             sale_order.action_confirm()
 
         # mark picking as delivered
-        if order_data['sale_order_state'] == 'delivered':
+        if order_data['sale_order_state'] in ['delivered', 'to_invoice']:
             sale_order.picking_ids.force_assign()
             sale_order.picking_ids.do_transfer()
 
+        # generate invoice
+        if order_data['sale_order_state'] == 'to_invoice':
+            inv_obj = self.env['account.invoice']
+            inv_id = sale_order.action_invoice_create()
+            inv = inv_obj.browse(inv_id)
+            inv.action_invoice_open()
         return {
             'sale_order_id': sale_order.id,
         }

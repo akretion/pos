@@ -152,6 +152,16 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                 'create_order_from_pos',
                 [self.prepare_create_sale_order(current_order)]
             ).then(function (result) {
+                if (current_order.is_to_invoice()){
+                    // generate the pdf and download it
+                    console.log(result)
+                    self.chrome.do_action(
+                        'pos_order_to_sale_order.pos_sale_order_invoice_report',
+                        { additional_context:{ active_ids:result }}
+                    );
+                }
+                return result;
+            }).then(function (result) {
                 return self.hook_create_sale_order_success(result);
             }).fail(function (error){
                 return self.hook_create_sale_order_error(error);
@@ -161,6 +171,9 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
         prepare_create_sale_order: function(order) {
             var res = order.export_as_JSON();
             res.sale_order_state = stateMachine.current.name;
+            if (order.to_invoice == true) {
+                res.sale_order_state = 'to_invoice';
+            }
             return res;
         },
         // Overload this function to make custom action after Sale order
