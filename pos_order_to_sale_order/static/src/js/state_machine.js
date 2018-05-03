@@ -16,6 +16,7 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
             isPayable: true,
             isPosOrder: true,
             isPicking: true,
+            isInvoicable: true,
         },
         enter: function(target) {
             var next = {
@@ -29,21 +30,25 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
                 next.isPayable = false && this.allowPayment;
                 next.isPosOrder = false;
                 next.isPicking = false;
+                next.isInvoicable = false;
             }
             if (target == 'poso') {
                 next.isPayable = true;
                 next.isPosOrder = true;
                 next.isPicking = true;
+                next.isInvoicable = true;
             }
             if (target == 'delivered') {
                 next.isPayable = true && this.allowPayment;
                 next.isPosOrder = false;
                 next.isPicking = true;
+                next.isInvoicable = true;
             }
             if (target == 'confirmed') {
                 next.isPayable = true && this.allowPayment;
                 next.isPosOrder = false;
                 next.isPicking = false;
+                next.isInvoicable = false;
             }
             this.notify(next);
         },

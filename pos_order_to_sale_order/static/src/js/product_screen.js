@@ -53,7 +53,26 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                     self.$el.find('.message').hide();
                 }
             });
+            stateMachine.listeners.push(function (next, prev) {
+                //hide/show invoice button if order is (not) invoicable
+                var order = self.pos.get_order();
+                if (['confirmed', 'delivered', 'poso'].indexOf(stateMachine.current.name) != -1) {
+                    // self.$el.find('.message').show();
+                    console.log('affiche bt inv')
+                    if (order.to_invoice) {
+                        self.$('.js_invoice').addClass('highlight');
+                    }
+                    self.$('.js_invoice').removeClass('disabled');
+                } else {
+                    // hide
+                    order.to_invoice = false;
+                    self.$('.js_invoice').removeClass('highlight')
+                    self.$('.js_invoice').addClass('disabled');
+                    console.log('masquer bt inv')
+                }
+            });
         },
+
         init_config: function () {
             var allowedStates = stateMachine.allowedStates;
             if (this.pos.config.iface_allow_draft_order) {
@@ -171,9 +190,7 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
         prepare_create_sale_order: function(order) {
             var res = order.export_as_JSON();
             res.sale_order_state = stateMachine.current.name;
-            if (order.to_invoice == true) {
-                res.sale_order_state = 'to_invoice';
-            }
+            res.to_invoice = order.to_invoice;
             return res;
         },
         // Overload this function to make custom action after Sale order
@@ -198,5 +215,15 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                 });
             }
         },
+        click_invoice: function(){
+                 var order = this.pos.get_order();
+                if (['confirmed', 'delivered', 'poso'].indexOf(stateMachine.current.name) != -1) {
+                    this._super();
+                    if (order.to_invoice && stateMachine.current.name == 'confirmed') {
+                        stateMachine.enter('delivered');
+                    }
+                }
+            },
+
     });
 });

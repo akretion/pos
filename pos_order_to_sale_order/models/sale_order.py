@@ -53,16 +53,18 @@ class SaleOrder(models.Model):
 
         # Confirm Sale Order
         if order_data['sale_order_state'] in\
-                ['confirmed', 'delivered', 'to_invoice']:
+                ['confirmed', 'delivered']:
             sale_order.action_confirm()
 
         # mark picking as delivered
-        if order_data['sale_order_state'] in ['delivered', 'to_invoice']:
+        if order_data['sale_order_state'] in ['delivered']:
             sale_order.picking_ids.force_assign()
             sale_order.picking_ids.do_transfer()
 
-        # generate invoice
-        if order_data['sale_order_state'] == 'to_invoice':
+        # generate invoice if order is delivred
+        # If product 
+        if order_data.get('to_invoice', False) and\
+                order_data['sale_order_state'] == 'delivered':
             inv_obj = self.env['account.invoice']
             inv_id = sale_order.action_invoice_create()
             inv = inv_obj.browse(inv_id)

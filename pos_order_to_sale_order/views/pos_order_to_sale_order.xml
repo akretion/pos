@@ -6,6 +6,7 @@
             <script type="text/javascript" src="/pos_order_to_sale_order/static/src/js/product_screen.js"></script>
             <script type="text/javascript" src="/pos_order_to_sale_order/static/src/js/state_machine.js"></script>
             <script type="text/javascript" src="/pos_order_to_sale_order/static/src/js/ui_widgets.js"></script>
+            <link rel="stylesheet" href="/pos_order_to_sale_order/static/src/css/pos_so.css"/>
         </xpath>
     </template>
 
