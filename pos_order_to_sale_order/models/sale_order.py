@@ -61,14 +61,32 @@ class SaleOrder(models.Model):
             sale_order.picking_ids.force_assign()
             sale_order.picking_ids.do_transfer()
 
-        # generate invoice if order is delivred
-        # If product 
-        if order_data.get('to_invoice', False) and\
-                order_data['sale_order_state'] == 'delivered':
-            inv_obj = self.env['account.invoice']
-            inv_id = sale_order.action_invoice_create()
-            inv = inv_obj.browse(inv_id)
-            inv.action_invoice_open()
+        # generate invoice
+        if order_data.get('to_invoice', False):
+            sale_order.pos_invoice_create(
+                pos_order_state=order_data['sale_order_state'])
         return {
             'sale_order_id': sale_order.id,
         }
+
+    @api.multi
+    def pos_invoice_create(self, pos_order_state=False):
+        self.ensure_one()
+        # generate invoice if order is delivred
+        # Indeed if product are configured as
+        # "invoice deliverd quantities ", and order is not delivered,
+        # the invoice genrated will be with amount 0.
+        if self.pos_order_is_invoiceble(pos_order_state=pos_order_state):
+            inv_obj = self.env['account.invoice']
+            inv_id = self.action_invoice_create()
+            inv = inv_obj.browse(inv_id)
+            inv.action_invoice_open()
+
+    @api.model
+    def pos_order_is_invoiceble(self, pos_order_state=False):
+        """
+        You can henerit this method to change invoicable condition
+        """
+        if pos_order_state == 'delivered':
+            return True
+        return False
