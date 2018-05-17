@@ -176,7 +176,7 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                     console.log(result)
                     self.chrome.do_action(
                         'pos_order_to_sale_order.pos_sale_order_invoice_report',
-                        { additional_context:{ active_ids:result }}
+                        { additional_context:{ active_ids: result['sale_order_id'] }}
                     );
                 }
                 return result;
