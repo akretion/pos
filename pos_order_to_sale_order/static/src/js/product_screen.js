@@ -56,7 +56,7 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
             stateMachine.listeners.push(function (next, prev) {
                 //hide/show invoice button if order is (not) invoicable
                 var order = self.pos.get_order();
-                if (['confirmed', 'delivered', 'poso'].indexOf(stateMachine.current.name) != -1) {
+                if (['confirmed', 'delivered', 'poso', 'invoiced'].indexOf(stateMachine.current.name) != -1) {
                     // self.$el.find('.message').show();
                     console.log('affiche bt inv')
                     if (order.to_invoice) {
@@ -83,6 +83,9 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
             }
             if (this.pos.config.iface_allow_delivered_order) {
                 allowedStates.push('delivered');
+            }
+            if (this.pos.config.iface_invoicing) {
+                allowedStates.push('invoiced');
             }
             if (this.pos.config.iface_allow_pos_order) {
                 allowedStates.push('poso');
@@ -148,8 +151,8 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
             if (stateMachine.current.isPosOrder) {
                 return this._super(force_validation);
             }
-            //client is mandatory for SO
-            if(!this.pos.get_order().get_client()){
+            //client is mandatory for Invoice Only
+            if(!this.pos.get_order().get_client() & stateMachine.current.isInvoicable){
                 this.gui.show_popup('confirm', {
                     'title': _t('Please select the Customer'),
                     'body': _t('You need to select the customer before you can invoice an order.'),
@@ -176,7 +179,7 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                     console.log(result)
                     self.chrome.do_action(
                         'pos_order_to_sale_order.pos_sale_order_invoice_report',
-                        { additional_context:{ active_ids: result['sale_order_id'] }}
+                        { additional_context:{ active_ids: [result['sale_order_id']] }}
                     );
                 }
                 return result;
@@ -217,10 +220,14 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
         },
         click_invoice: function(){
                  var order = this.pos.get_order();
-                if (['confirmed', 'delivered', 'poso'].indexOf(stateMachine.current.name) != -1) {
+                if (['confirmed', 'delivered', 'poso', 'invoiced'].indexOf(stateMachine.current.name) != -1) {
                     this._super();
-                    if (order.to_invoice && stateMachine.current.name == 'confirmed') {
-                        stateMachine.enter('delivered');
+                    if (order.to_invoice && stateMachine.current.name != 'draft') {
+                        // stateMachine.enter('delivered');
+                        stateMachine.enter('invoiced');
+                    }
+                    if (!order.to_invoice){
+                        stateMachine.toggle('invoiced');
                     }
                 }
             },
