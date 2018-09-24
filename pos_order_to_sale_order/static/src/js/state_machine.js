@@ -10,7 +10,7 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
         listeners: [],
         allowPayment: false,
         allowedStates: [],
-        // possible states : poso, draft, confirmed, delivered, invoicedd
+        // possible states : poso, draft, confirmed, delivered, invoiced
         current: {
             name: 'poso',
             isPayable: true,
@@ -27,7 +27,7 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
                 return this.exit(target);
             }
             if (target == 'draft' ) {
-                next.isPayable = false && this.allowPayment;
+                next.isPayable = false;
                 next.isPosOrder = false;
                 next.isPicking = false;
                 next.isInvoicable = false;

@@ -57,8 +57,6 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                 //hide/show invoice button if order is (not) invoicable
                 var order = self.pos.get_order();
                 if (['confirmed', 'delivered', 'poso', 'invoiced'].indexOf(stateMachine.current.name) != -1) {
-                    // self.$el.find('.message').show();
-                    console.log('affiche bt inv')
                     if (order.to_invoice) {
                         self.$('.js_invoice').addClass('highlight');
                     }
@@ -68,7 +66,6 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
                     order.to_invoice = false;
                     self.$('.js_invoice').removeClass('highlight')
                     self.$('.js_invoice').addClass('disabled');
-                    console.log('masquer bt inv')
                 }
             });
         },
@@ -176,7 +173,6 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
             ).then(function (result) {
                 if (current_order.is_to_invoice()){
                     // generate the pdf and download it
-                    console.log(result)
                     self.chrome.do_action(
                         'pos_order_to_sale_order.pos_sale_order_invoice_report',
                         { additional_context:{ active_ids: [result['sale_order_id']] }}
@@ -219,18 +215,21 @@ odoo.define('pos_order_to_sale_order.product_screen', function (require) {
             }
         },
         click_invoice: function(){
-                 var order = this.pos.get_order();
-                if (['confirmed', 'delivered', 'poso', 'invoiced'].indexOf(stateMachine.current.name) != -1) {
-                    this._super();
-                    if (order.to_invoice && stateMachine.current.name != 'draft') {
-                        // stateMachine.enter('delivered');
-                        stateMachine.enter('invoiced');
-                    }
-                    if (!order.to_invoice){
-                        stateMachine.toggle('invoiced');
-                    }
+            /* this is not a widget because invoice button is defined in
+            point_of_sale/.../screens.js
+            */
+            var order = this.pos.get_order();
+            if (['confirmed', 'delivered', 'poso', 'invoiced'].indexOf(stateMachine.current.name) != -1) {
+                this._super();
+                if (order.to_invoice && stateMachine.current.name != 'draft') {
+                    // stateMachine.enter('delivered');
+                    stateMachine.enter('invoiced');
                 }
-            },
+                if (!order.to_invoice){
+                    stateMachine.toggle('invoiced');
+                }
+            }
+        },
 
     });
 });

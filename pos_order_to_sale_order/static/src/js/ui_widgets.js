@@ -64,7 +64,6 @@ odoo.define('pos_order_to_sale_order.ui_widgets', function (require) {
             this._super();
             this.$el.click(function(evt){
                 if (self.isDisabled()) {
-                    console.log('on fait rien')
                     return;
                 }
                 stateMachine.toggle('delivered');
