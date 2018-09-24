@@ -10,7 +10,7 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
         listeners: [],
         allowPayment: false,
         allowedStates: [],
-        // possible states : poso, draft, confirmed, delivered
+        // possible states : poso, draft, confirmed, delivered, invoicedd
         current: {
             name: 'poso',
             isPayable: true,
@@ -38,17 +38,23 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
                 next.isPicking = true;
                 next.isInvoicable = true;
             }
-            if (target == 'delivered') {
-                next.isPayable = true && this.allowPayment;
-                next.isPosOrder = false;
-                next.isPicking = true;
-                next.isInvoicable = true;
-            }
             if (target == 'confirmed') {
                 next.isPayable = true && this.allowPayment;
                 next.isPosOrder = false;
                 next.isPicking = false;
                 next.isInvoicable = false;
+            }
+            if (target == 'delivered') {
+                next.isPayable = true && this.allowPayment;
+                next.isPosOrder = false;
+                next.isPicking = true;
+                next.isInvoicable = false;
+            }
+            if (target == 'invoiced') {
+                next.isPayable = true && this.allowPayment;
+                next.isPosOrder = false;
+                next.isPicking = true;
+                next.isInvoicable = true;
             }
             this.notify(next);
         },
@@ -66,8 +72,9 @@ odoo.define('pos_order_to_sale_order.state_machine', function (require) {
             map = {
                 'poso': fallback,
                 'confirmed': 'poso',
+                'draft': fallback,
                 'delivered': fallback,
-                'draft': fallback
+                'invoiced': fallback
             };
             this.enter(map[target]);
         },
