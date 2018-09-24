@@ -17,7 +17,7 @@ class SaleOrder(models.Model):
         string='Receipt Ref', readonly=True, copy=False, default='')
     session_id = fields.Many2one(
         'pos.session', string='Session',
-        select=1, domain="[('state', '=', 'opened')]",
+        index=1, domain="[('state', '=', 'opened')]",
         states={'draft': [('readonly', False)]}, readonly=True)
 
     @api.model
