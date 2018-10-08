@@ -15,7 +15,6 @@
     ],
     'website': 'https://odoo-community.org/',
     'data': [
-        'views/pos_config_view.xml',
         'views/sale_order_view.xml',
         'views/pos_pay_sale_order.xml',
     ],
