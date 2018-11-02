@@ -72,3 +72,23 @@ class AccountInvoice(models.Model):
                     _("No pos session linked to the invoice %s") %
                     (invoice.number,))
         return True
+
+    @api.multi
+    def invoice_validate(self):
+        # Update invoice partner on sale order and update partner on
+        # sale order statement if different on the invoice.
+        # In order not to have inconsistency on the partners when the reconcile
+        for invoice in self:
+            sales = []
+            for invoice_line in invoice.invoice_line_ids:
+                for sale_line in invoice_line.sale_line_ids:
+                    if sale_line.order_id not in sales:
+                        sales += sale_line.order_id
+            for sale in sales:
+                if (invoice.pos_anonyme_invoice and
+                    invoice.session_id == sale.session_id and
+                        sale.partner_invoice_id != invoice.partner_id):
+                    sale.write({'partner_invoice_id': invoice.partner_id.id})
+                    sale.statement_ids.write(
+                        {'partner_id': invoice.partner_id.id})
+        return super(AccountInvoice, self).invoice_validate()
