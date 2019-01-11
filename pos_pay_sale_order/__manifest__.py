@@ -17,6 +17,7 @@
     'data': [
         'views/sale_order_view.xml',
         'views/pos_pay_sale_order.xml',
+        'views/pos_config.xml',
     ],
     'qweb': [
         'static/src/xml/pos_pay_sale_order.xml',
