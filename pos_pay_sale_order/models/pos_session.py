@@ -13,14 +13,13 @@ class PosSession(models.Model):
     def _get_so_domains(
             self, vals, anonym_partner_id, anonym_order=True):
         self.ensure_one()
-        vals = [
-            ('session_id', '=', self.id),
-            ('state', '=', 'sale'),
-        ]
-        if anonym_order:
-            vals.append(('partner_id', '=', anonym_partner_id),)
-        else:
-            vals.append(('partner_id', '!=', anonym_partner_id),)
+        vals = [('session_id', '=', self.id)]
+        if not self.env.context.get('generated_invoice', False):
+            vals.append(('state', '=', 'manual'),)
+            if anonym_order:
+                vals.append(('partner_id', '=', anonym_partner_id),)
+            else:
+                vals.append(('partner_id', '!=', anonym_partner_id),)
         return vals
 
     @api.multi
@@ -30,7 +29,9 @@ class PosSession(models.Model):
             invoices = self.env['account.invoice'].browse(False)
             # invoiced order : get generated invoice
             # and reconcile it with pos payment
-            generated_invoices = self._get_generated_invoice()
+            generated_invoices = self._get_generated_invoice(
+                partner_id=False, grouped=False, anonym_order=False,
+                anonym_journal=False)
             generated_invoices.action_invoice_open()
 
             self._reconcile_invoice_with_pos_payment(generated_invoices)
@@ -42,7 +43,7 @@ class PosSession(models.Model):
                 grouped=True, anonym_order=True, anonym_journal=True)
             self._reconcile_invoice_with_pos_payment(grouped_anonym_invoice)
             invoices |= grouped_anonym_invoice
-            # not anonym orders : generate invoices for not anonym patner
+            # not anonym orders : generate invoices for not anonym partner
             # and reconcile their with pos payment
             invoice_not_anonym = session._generate_invoice(
                 partner_id=partner_id,
@@ -52,15 +53,15 @@ class PosSession(models.Model):
             return invoices
         return True
 
-    def _get_generated_invoice(self):
-        sale_obj = self.env['sale.order']
-        domains = [
-            ('session_id', '=', self.id),
-        ]
-        orders = sale_obj.search(domains)
+    @api.multi
+    def _get_generated_invoice(self, partner_id=False, grouped=False,
+                               anonym_order=False, anonym_journal=False):
+        self.ensure_one()
+        domains = {}
+        domains = self.with_context(generated_invoice=True)._get_so_domains(
+            domains, partner_id, anonym_order=anonym_order)
         invoices = self.env['account.invoice'].browse(False)
-
-        for order in orders:
+        for order in self.env['sale.order'].search(domains):
             if order.invoice_ids:
                 invoices |= order.invoice_ids
         return invoices
