@@ -6,8 +6,7 @@
             <field name="arch" type="xml">
                 <form string="Pay Pos Sale Order">
                     <group>
-                        <field name="statement_id" string="Caisse"
-                            readonly="True"/>
+                        <field name="statement_id" string="Caisse"/>
                         <field name="amount" string="Paid Amount"/>
                         <field name="date" string="Date"/>
                         <field name="description" string="Description"/>
@@ -42,7 +41,7 @@
                 <button name="print_quotation" position="after">
                   <button name="%(open_pay_pos_sale_order)d"
                       string="Register Pos Payments"
-                      type="action" states="draft,sent,progress,manual"/>
+                      type="action" states="draft,sent,sale,done"/>
                 </button>
             </field>
         </record>
