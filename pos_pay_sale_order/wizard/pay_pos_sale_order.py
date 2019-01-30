@@ -14,6 +14,21 @@ class PayPosSaleOrder(models.TransientModel):
     _description = 'Wizard to generate a banck statement payment from'
     'the sale order created by pos'
 
+
+    @api.model
+    def _get_statement_domain(self):
+        so = self.env['pos.session']
+        order_id = self.env.context.get('active_id')
+        if not order_id:
+            return [('id', '=', False)]
+        sessions = so.search(
+            [('state', '=', 'opened'), ('user_id', '=', self.env.uid)])
+        if sessions:
+            return [('id', 'in', sessions[0].statement_ids.ids)]
+        else:
+            raise UserError(
+                _('There is no pos session opened.'))
+
     @api.model
     def _default_statement_id(self):
         so = self.env['pos.session']
@@ -32,10 +47,10 @@ class PayPosSaleOrder(models.TransientModel):
             #     if journal.type == 'cash':
             #         cash_journal = journal
             #         return cash_journal
-            if not cash_statement:
-                raise UserError(
-                    _('The session %s, do not contains cash statement opened.'
-                      % sessions[0].name))
+            # if not cash_statement:
+            #     raise UserError(
+            #         _('The session %s, do not contains cash statement opened.'
+            #           % sessions[0].name))
         else:
             raise UserError(
                 _('There is no pos session opened.'))
@@ -51,12 +66,14 @@ class PayPosSaleOrder(models.TransientModel):
         prec_acc = self.env['decimal.precision'].precision_get('Account')
         if float_is_zero(amount_to_paye, prec_acc):
             raise UserError(
-                _('Error!'),
+                _('Error!') + 
                 _('No thing to pay. Order is yet payed or it amount is 0'))
         return amount_to_paye
 
     statement_id = fields.Many2one(
-        'account.bank.statement', default=_default_statement_id)
+        'account.bank.statement', domain=_get_statement_domain,
+        #  default=_default_statement_id,
+         )
     amount = fields.Float('Amount', digits=dp.get_precision('Sale Price'),
                           default=_default_amount)
     date = fields.Datetime('Payment Date', default=fields.Datetime.now)
@@ -78,8 +95,8 @@ class PayPosSaleOrder(models.TransientModel):
             'payment_name': self.description,
             'journal': self.statement_id.journal_id.id,
         }
-        self.env['pos.order'].add_payment(order_id, payment_data)
         order = self.env['sale.order'].browse(order_id)
+        order.add_payment(payment_data)
         session = order.session_id
         if not session:
             uid = self.env.context.get('uid')
