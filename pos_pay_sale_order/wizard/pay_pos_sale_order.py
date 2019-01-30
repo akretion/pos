@@ -66,7 +66,7 @@ class PayPosSaleOrder(models.TransientModel):
         prec_acc = self.env['decimal.precision'].precision_get('Account')
         if float_is_zero(amount_to_paye, prec_acc):
             raise UserError(
-                _('Error!'),
+                _('Error!') + 
                 _('No thing to pay. Order is yet payed or it amount is 0'))
         return amount_to_paye
 
