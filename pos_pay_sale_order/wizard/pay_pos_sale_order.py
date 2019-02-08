@@ -61,8 +61,7 @@ class PayPosSaleOrder(models.TransientModel):
         if not order_id:
             return 0
         order = self.env['sale.order'].browse(order_id)
-        amount_payed = sum([st.amount for st in order.statement_ids])
-        amount_to_paye = order.amount_total - amount_payed
+        amount_to_paye = order.residual
         prec_acc = self.env['decimal.precision'].precision_get('Account')
         if float_is_zero(amount_to_paye, prec_acc):
             raise UserError(
