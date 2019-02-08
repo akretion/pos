@@ -61,13 +61,13 @@ class PayPosSaleOrder(models.TransientModel):
         if not order_id:
             return 0
         order = self.env['sale.order'].browse(order_id)
-        amount_to_paye = order.residual
+        amount_to_pay = order.residual
         prec_acc = self.env['decimal.precision'].precision_get('Account')
-        if float_is_zero(amount_to_paye, prec_acc):
+        if float_is_zero(amount_to_pay, prec_acc):
             raise UserError(
                 _('Error!') + 
                 _('No thing to pay. Order is yet payed or it amount is 0'))
-        return amount_to_paye
+        return amount_to_pay
 
     statement_id = fields.Many2one(
         'account.bank.statement', domain=_get_statement_domain,
