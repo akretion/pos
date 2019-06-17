@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+   <record id="action_pos_test_tree" model="ir.actions.act_window">
+     <field name="name">Pos Exception Rules</field>
+     <field name="res_model">exception.rule</field>
+     <field name="view_mode">tree,form</field>
+     <field name="view_id" ref="base_exception.view_exception_rule_tree"/>
+     <field name="domain">[('model', 'in', ['pos.order', 'pos.order.line'])]</field>
+     <field name="context">{'active_test': False, 'default_model' : 'pos.order'}</field>
+  </record>
+
+  <menuitem
+    action="action_pos_test_tree" id="menu_pos_test" name="Exception Rules"
+    parent="point_of_sale.menu_point_config_product" sequence="90"/>
+
+  <record id="view_pos_pos_form" model="ir.ui.view">
+    <field name="model">pos.order</field>
+    <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+    <field name="arch" type="xml">
+      <field name="name" position="after">
+        <group name="main_exception">
+          <field name="main_exception_id" options='{"no_open": True}'
+                 class="oe_inline" string="Error:"
+                 attrs="{'invisible':[('main_exception_id','=', False)]}"/>
+        </group>
+      </field>
+      <xpath expr="//field[@name='date_order']/.." position="inside">
+        <field name="ignore_exception" states="invoiced"/>
+      </xpath>
+      <xpath expr="//page[@name='extra']" position="inside">
+        <group name="exception" colspan="2" col="2">
+          <separator string="Exception" colspan="2"/>
+          <field name="exception_ids" colspan="2" nolabel="1"/>
+        </group>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="view_pos_order_tree" model="ir.ui.view">
+    <field name="model">pos.order</field>
+    <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+    <field name="arch" type="xml">
+      <field name="state" position="after">
+        <field name="main_exception_id"/>
+      </field>
+    </field>
+  </record>
+
+  <record id="view_pos_order_filter" model="ir.ui.view">
+    <field name="model">pos.order</field>
+    <field name="inherit_id" ref="point_of_sale.view_pos_order_filter" />
+    <field name="arch" type="xml">
+      <filter name="order_month" position="after">
+        <separator orientation="vertical"/>
+        <filter name="tofix" string="Exception"
+                domain="[]" context="{'group_by':'main_exception_id'}"/>
+      </filter>
+    </field>
+  </record>
+
+</odoo>

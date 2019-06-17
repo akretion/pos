@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<!-- <odoo noupdate="1"> -->
+
+  <record forcecreate="True" id="ir_cron_test_orders" model="ir.cron">
+    <field name="name">POS Order Lines</field>
+    <field name="active" eval="True"/>
+    <field name="user_id" ref="base.user_root"/>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+    <field name="numbercall">-1</field>
+    <field eval="False" name="doall"/>
+    <field name="model_id" ref="point_of_sale.model_pos_order_line"/>
+    <field name="state">code</field>
+    <field name="code">model.test_pos_orders()</field>
+  </record>
+
+  <record id="pos_line_check_subtotal" model="exception.rule">
+    <field name="name">Check subtotal</field>
+    <field name="description">Check subtotal with product and qty</field>
+    <field name="sequence">45</field>
+    <field name="model">pos.order.line</field>
+    <field name="code">if self._check_matching_sub_total(): failed=True</field>
+    <field name="active" eval="False"/>
+  </record>
+
+  <record id="pos_order_line_missing_vat" model="exception.rule">
+    <field name="name">Missing vat</field>
+    <field name="description">Missing vat on some Pos lines</field>
+    <field name="sequence">40</field>
+    <field name="model">pos.order.line</field>
+    <field name="code">if not self.tax_ids_after_fiscal_position: failed=True</field>
+    <field name="active" eval="False"/>
+  </record>
+
+  <record id="pos_order_line_too_many_vat" model="exception.rule">
+    <field name="name">Several vat</field>
+    <field name="description">Several vat on some Pos lines</field>
+    <field name="sequence">50</field>
+    <field name="model">pos.order.line</field>
+    <field name="code">if len(self.tax_ids_after_fiscal_position) > 1: failed=True</field>
+    <field name="active" eval="False"/>
+  </record>
+
+
+</odoo>
