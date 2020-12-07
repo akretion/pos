@@ -10,7 +10,6 @@ from odoo import api, fields, models
 class ProductProduct(models.Model):
     _inherit = "product.product"
 
-    @api.multi
     @api.depends("image")
     def _compute_has_image(self):
         for product in self:
