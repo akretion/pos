@@ -7,7 +7,7 @@ Point Of Sale Load faster
 In the point of sale, loading products without image spend unnecessary time
 and resources.
 
-When you have 8000 products in your Point of Sale and most of them 
+When you have 8000 products in your Point of Sale and most of them
 don't have images, removing thousands of useless requests is welcome:
 the PoS loads faster that way.
 
@@ -38,8 +38,8 @@ Each time the PoS instantiate a product, it will add this code for each product
 
 The browser will trigger as many requests than there are different urls.
 
-If you have many products, the browser will soon reach his limit of 
-network connections to Odoo server and will wait for free slots instead of 
+If you have many products, the browser will soon reach his limit of
+network connections to Odoo server and will wait for free slots instead of
 loading other valuable contents. Then the PoS is then very slow to work with.
 
 This module adds a field has_image in product.product model.
