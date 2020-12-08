@@ -16,8 +16,8 @@
         # "views/pos_config.xml",
     ],
     "qweb": [
-        "static/src/xml/ProductItemNoImage.xml",
-        "static/src/xml/ProductList.xml",
+        # "static/src/xml/ProductItemNoImage.xml",
+        # "static/src/xml/ProductList.xml",
     ],
     "installable": True,
 }

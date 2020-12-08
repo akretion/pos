@@ -8,7 +8,7 @@
         <xpath expr="." position="inside">
             <script
                 type="text/javascript"
-                src="/pos_default_empty_image/static/src/js/ProductItemNoImage.js"
+                src="/pos_default_empty_image/static/src/js/ProductItem.js"
             />
         </xpath>
         <xpath expr="." position="inside">
