@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="ProductItemNoImage" owl="1">
+        <article class="product" tabindex="0" t-on-keypress="spaceClickProduct"
+                 t-on-click="trigger('click-product', props.product)"
+                 t-att-data-product-id="props.product.id"
+                 t-attf-aria-labelledby="article_product_{{props.product.id}}">
+            <div class="product-img">
+                <span class="price-tag">
+                    <t t-esc="price" />
+                </span>
+            </div>
+
+            <!--Set product name vals-->
+            <t t-set="name_length" t-value="props.product.display_name.length" />
+            <t t-set="font_size" t-value="
+                name_length >=120 and 21
+                or name_length >=90 and 22
+                or name_length >=60 and 23
+                or name_length>=50 and 24
+                or name_length>=40 and 26
+                or 30"/>
+
+            <div class="product-name" t-attf-id="article_product_{{props.product.id}}"
+                 t-attf-style="font-size: #{font_size}px !important; line-height: #{font_size}px !important;">
+                <t t-esc="props.product.display_name" />
+            </div>
+        </article>
+    </t>
+
+</templates>

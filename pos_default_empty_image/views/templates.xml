@@ -8,18 +8,21 @@
         <xpath expr="." position="inside">
             <script
                 type="text/javascript"
-                src="/pos_default_empty_image/static/src/js/models.js"
+                src="/pos_default_empty_image/static/src/js/ProductItemNoImage.js"
             />
+        </xpath>
+        <xpath expr="." position="inside">
             <script
                 type="text/javascript"
-                src="/pos_default_empty_image/static/src/js/widgets.js"
+                src="/pos_default_empty_image/static/src/js/models.js"
             />
         </xpath>
-        <xpath expr="//link[@id='pos-stylesheet']" position="after">
-            <link
-                rel="stylesheet"
-                href="/pos_default_empty_image/static/src/css/pos_default_empty_image.css"
-            />
-        </xpath>
+<!--        <xpath expr="//link[@id='pos-stylesheet']" position="after">-->
+<!--            <link-->
+<!--                rel="stylesheet"-->
+<!--                href="/pos_default_empty_image/static/src/css/pos_default_empty_image.css"-->
+<!--            />-->
+<!--        </xpath>-->
+
     </template>
 </odoo>

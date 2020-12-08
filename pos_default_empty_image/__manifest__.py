@@ -13,10 +13,11 @@
     ],
     "data": [
         "views/templates.xml",
-        "views/pos_config.xml",
+        # "views/pos_config.xml",
     ],
     "qweb": [
-        "static/src/xml/pos_default_empty_image.xml",
+        "static/src/xml/ProductItemNoImage.xml",
+        "static/src/xml/ProductList.xml",
     ],
     "installable": True,
 }
