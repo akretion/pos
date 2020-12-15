@@ -13,11 +13,22 @@ class Partner(models.Model):
 
         Action called from view with self.id = a res.partner.
         """
+        def _normalizeRelation(relation):
+            if not relation:
+                return []
+            else:
+                return [relation.id, relation.display_name]
+
         return {
             'type': 'ir.actions.tell_pos',
             'params': {
                 'type': 'partner.partner_selected',
                 'partner_id': self.id,
                 'name': self.name,
+                'property_account_position_id': _normalizeRelation(
+                    self.property_account_position_id),
+                'property_product_pricelist': _normalizeRelation(
+                    self.property_product_pricelist),
+                'lang': self.lang,
             },
         }

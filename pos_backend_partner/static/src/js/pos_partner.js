@@ -1,71 +1,73 @@
-'use strict';
+/* Copyright (C) 2020-Today Akretion (https://www.akretion.com)
+    @author Raphaël Reverdy (https://www.akretion.com)
+    License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+*/
 
-odoo.define('pos_backend_partner.partner_pos', function (require) {
+odoo.define("pos_backend_partner.ProductScreen", function(require){
+    "use strict";
+    var Registries = require('point_of_sale.Registries');
+    var ProductScreen = require('point_of_sale.ProductScreen');
+    var PaymentScreen = require('point_of_sale.PaymentScreen');
+    var Session = require('web.Session');
+    var PosDB = require("point_of_sale.DB");
     var tools = require('pos_backend_communication.tools');
-    var session = require('web.session');
-    var ProductScreenWidget = require('point_of_sale.screens');
-    var translation = require('web.translation');
-    var _t = translation._t;
-    var action_url = null;
-    var pos_instance = null;
 
-    function set_client(message)  {
-        var data = message.data;
-        var partner_info = {
-            'id': parseInt(data.partner_id, 10),
-            'name': data.name,
-            'country_id': [],
-        };
-        pos_instance.get('selectedOrder').set_client(partner_info);
-        pos_instance.db.add_partners([partner_info]);
-        alert(_t('Customer set')); //try to get the focus back
-    }
+    var pos_instance;
+    var _t;
+    var action_url;
 
-    function open_backend(message) {
+    async function open_backend(message, session) {
         //lookup action_id
         action_url = action_url || session.rpc(
             '/web/action/load', { "action_id":"pos_backend_partner.action_select_partner_pos"})
             .then(function (e) { return e.id; });
 
-        action_url.then(function (action_id) {
+        return action_url.then(function (action_id) {
             var url = "/web#view_type=list&model=res.partner&action=" + action_id;
             var msg = {'type': 'partner.choose'};
             tools.open_page(url, msg, 'partner');
         });
     }
 
-    // Bind customer button in main screen
-    ProductScreenWidget.ActionpadWidget.include({
-        init: function(parent, options) {
-            this._super(parent, options);
-            pos_instance = this.pos;
-        },
-        renderElement: function() {
-          var self = this;
-          this._super();
-          this.$('.set-customer').unbind('click');
-          this.$('.set-customer').click(function(){
-              open_backend();
-          });
-        }
-    });
-
-    // Bind customer button in payement screen
-    ProductScreenWidget.PaymentScreenWidget.include({
-        init: function(parent, options) {
-            this._super(parent, options);
-            pos_instance = this.pos;
-        },
-        click_set_customer: function() {
-            open_backend();
-        }
-    });
-
+    function set_client(message)  {
+        var data = message.data;
+        var partner_info = {
+            'id': parseInt(data.partner_id, 10),
+            'name': data.name,
+            'lang': data.lang,
+            'property_account_position_id': data.property_account_position_id,
+            'property_product_pricelist': data.property_product_pricelist,
+            'country_id': [],
+        };
+        pos_instance.get('selectedOrder').set_client(partner_info);
+        pos_instance.db.add_partners([partner_info]);
+        pos_instance.get('selectedOrder').updatePricelist(partner_info);
+        alert(_t('Customer set')); //try to get the focus back
+    }
     tools.callbacks['partner.partner_selected'] = set_client;
 
-    return {
-        callbacks: tools.callbacks,
-    };
+    const PBPProductScreen = (ProductScreen) =>
+        class PBPProductScreen extends ProductScreen {
+            async _onClickCustomer() {
+                //no super !
+                pos_instance = this.env.pos;
+                _t = this.env._t
+                open_backend(null, this.env.session)
+            }
+        }
+
+    const PBPPaymentScreen = (PaymentScreen) => 
+        class PBPPaymentScreen extends PaymentScreen {
+            async selectClient() {
+                //no super !
+                pos_instance = this.env.pos;
+                _t = this.env._t
+                open_backend(null, this.env.session)
+            }
+        }
+    ;
+    Registries.Component.extend(ProductScreen, PBPProductScreen);
+    Registries.Component.extend(PaymentScreen, PBPPaymentScreen);
 });
 
 odoo.define('pos_backend_partner.prevent_model_load', function (require) {
