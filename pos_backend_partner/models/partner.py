@@ -2,7 +2,7 @@
 # @author Raphaël Reverdy <raphael.reverdy@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models, api
+from odoo import models
 
 
 class Partner(models.Model):
@@ -13,6 +13,7 @@ class Partner(models.Model):
 
         Action called from view with self.id = a res.partner.
         """
+
         def _normalizeRelation(relation):
             if not relation:
                 return []
@@ -20,15 +21,17 @@ class Partner(models.Model):
                 return [relation.id, relation.display_name]
 
         return {
-            'type': 'ir.actions.tell_pos',
-            'params': {
-                'type': 'partner.partner_selected',
-                'partner_id': self.id,
-                'name': self.name,
-                'property_account_position_id': _normalizeRelation(
-                    self.property_account_position_id),
-                'property_product_pricelist': _normalizeRelation(
-                    self.property_product_pricelist),
-                'lang': self.lang,
+            "type": "ir.actions.tell_pos",
+            "params": {
+                "type": "partner.partner_selected",
+                "partner_id": self.id,
+                "name": self.name,
+                "property_account_position_id": _normalizeRelation(
+                    self.property_account_position_id
+                ),
+                "property_product_pricelist": _normalizeRelation(
+                    self.property_product_pricelist
+                ),
+                "lang": self.lang,
             },
         }
