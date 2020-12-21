@@ -12,6 +12,6 @@ odoo.define("pos_backend_partner.partner_back", function (require) {
             alert(_t("Choose a customer"));
         };
         // Tell the POS we are ready to receive
-        tools.sendMessage({ type: "partner.ready" });
+        tools.sendMessage({type: "partner.ready"});
     }
 });

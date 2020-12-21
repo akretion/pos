@@ -6,8 +6,6 @@ td[data-field="select_in_pos_current_order"] > button {
     display: none;
 }
 
-.pos_backend_communication
-    td[data-field="select_in_pos_current_order"]
-    > button {
+.pos_backend_communication td[data-field="select_in_pos_current_order"] > button {
     display: block;
 }

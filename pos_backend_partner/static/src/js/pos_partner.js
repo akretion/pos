@@ -27,9 +27,8 @@ odoo.define("pos_backend_partner.ProductScreen", function (require) {
                 });
 
         return action_url.then(function (action_id) {
-            var url =
-                "/web#view_type=list&model=res.partner&action=" + action_id;
-            var msg = { type: "partner.choose" };
+            var url = "/web#view_type=list&model=res.partner&action=" + action_id;
+            var msg = {type: "partner.choose"};
             tools.open_page(url, msg, "partner");
         });
     }
