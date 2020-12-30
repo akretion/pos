@@ -47,7 +47,10 @@ odoo.define("pos_product_template.SelectVariantPopup", function(require){
             this.state.attributes = attributes;
             this.state.products = products;
 
+
         }
+
+
 
         async _clickProduct(event) {
             this.product_selected = event.detail
@@ -103,8 +106,16 @@ odoo.define("pos_product_template.SelectVariantPopup", function(require){
             return Array.from(variants_ids).map( x => {
                 return this.env.pos.db.get_product_by_id(x);
             });
+
+
+            
         }
-    }
+
+       
+    };
+
+    
+
     SelectVariantPopup.template = 'SelectVariantPopup';
     SelectVariantPopup.defaultProps = {
         confirmText: 'Ok',
@@ -114,4 +125,6 @@ odoo.define("pos_product_template.SelectVariantPopup", function(require){
 
     Registries.Component.add(SelectVariantPopup);
     return SelectVariantPopup;
+
+   
 });

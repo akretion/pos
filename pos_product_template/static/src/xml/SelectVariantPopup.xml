@@ -5,20 +5,20 @@
 <template>
     <t t-name="SelectVariantPopup" owl="1">
         <div role="dialog" class="modal-dialog">
-            <div class="popup popup-text popup-lg pxxopup-select-variant">
+            <div class="popup popup-lg">
                 <header class="title">
                     <t t-esc="state.template.name" />
                 </header>
 
-                <main class="body select-variant col-lg-4 col-md-6 col-sm-12">
-                    <div class="select-variant-attribute">
-                        <div class='attribute-list-container'>
+                <main class="body select-variant">
+                    <div class="select-variant-wrapper">
+                        <div class="attribute-list-container">
                             <div class="attribute-list-scroller touch-scrollable">
                                 <div t-foreach="state.attributes" t-as="attribute" t-key="attribute.id"  class="attribute">
-                                    <div class="attribute-name button selected" t-att-data-attribute-id="attribute.id">
+                                    <div class="attribute-name button collapsible" t-att-data-attribute-id="attribute.id">
                                         <t t-esc="attribute.name"/>
                                     </div>
-                                    <div class='value-list-container'>
+                                    <div class="value-list-container content">
                                         <div class="value-list" t-foreach="attribute.ptav" t-as="value" t-key="value.id">
                                             <AttributeValueItem attributeValue="value" t-att-class="{selected: state.ptav_id_selected[value.id]}"/>
                                         </div>

@@ -66,6 +66,17 @@ odoo.define("pos_product_template.pos_product_template", function(require){
             }
         }
 
+    // const AttributeButton = document.getElementsByClassName("collapsible");
+    // AttributeButton.addEvenetListener("click", function() {
+    //     this.classList.toggle("active");
+    //     const content = this.nextElementSibling;
+    //     if (content.style.display === "block") {
+    //         content.style.display = "none";
+    //     } else {
+    //         content.style.display ="block"
+    //     }
+    // });
+
     const PPTProductItem = (ProductItem) =>
         class extends ProductItem {
             constructor(parent, props) {
