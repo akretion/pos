@@ -55,7 +55,9 @@
 
     -webkit-overflow-scrolling: touch;
 }
-
+.pos .select-variant .select-variant-wrapper .select-variant-products {
+    margin-left: 2rem;
+}
 .pos .variant-list {
     padding: 10px;
     text-align: left;
@@ -66,28 +68,47 @@
 .pos .attribute {
     position: relative;
     width: 100%;
-    vertical-align: top;
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
 }
 
 .pos .attribute .attribute-name {
-    float: left;
     font-size: 13px;
-    width: 20%;
     overflow: hidden;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    
 }
+
+
 
 .pos .attribute .value-list-container {
-    width: 78%;
-    float: left;
+   text-align: left;
 }
 
-.pos .attribute .selected {
-    background-color: white;
+.pos .attribute .value-list {
+    border: solid 0.3px #e1e1e1;
+    background-color: rgba(140,143,183,0.2);
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-content: center;
+    flex-direction: column;
+    margin-bottom: 0.15rem;
+    line-height: 1.5rem;
 }
+
+.pos .attribute .value-list:hover {
+    background-color: rgba(17, 17, 23, 0.2);
+}
+
 
 .attributeValue.selected {
-    color: red;
+    background: #6EC89B;
+    color: white;
+    border-color: transparent;
 }
 
 .pos .attribute .attribute-value {
@@ -206,6 +227,40 @@
     /*background:#FFF;*/
     padding: 3px;
     padding-top: 15px;
+}
+.select-variant-wrapper {
+    display: flex;
+    flex-direction: row;
+    min-height: 30vw;
+}
+
+.select-variant-wrapper .attribute-list-container {
+    width: 15vw;
+    padding: 2rem;
+    background-color: white;
+}
+
+.select-variant-wrapper .attribute-list-container .attribute .collapsible {
+   background-color: #7f82ac;
+   color: white;
+   margin-bottom: 0.15rem;
+}
+
+.select-variant-wrapper .attribute-list-container .attribute {
+    padding-bottom: 1rem;
+}
+
+.select-variant-wrapper .attribute-list-container .attribute .content {
+    display: block;
+    overflow: hidden;
+}
+
+.pos .select-variant .select-variant-wrapper .select-variant-products {
+    width:100%;
+    height:  100%;
+    display: flex;
+    flex-wrap: wrap;
+
 }
 
 /*.pos .variant-list-scroller{*/
