@@ -1,15 +1,15 @@
 <templates id="template" xml:space="preserve">
   <t t-inherit="point_of_sale.ReceiptScreen" t-inherit-mode="extension">
     <xpath expr="//div[hasclass('button', 'print')]" position="before">
-      <div class="button print_without_price" t-on-click="hidePrice">
+      <div class="button hide_price" t-att-class="{ highlight: isHidePrice() }" t-on-click="hidePrice">
         <i class='fa fa-eye'></i> Hide Price
       </div>
     </xpath>
   </t>
 
   <t t-inherit="point_of_sale.ReprintReceiptScreen" t-inherit-mode="extension">
-    <xpath expr="//div[hasclass('button', 'print')]" position="after">
-      <div class="button print_without_price" t-on-click="hidePrice">
+    <xpath expr="//div[hasclass('button', 'print')]" position="before">
+      <div class="button hide_price" t-att-class="{ highlight: isHidePrice() }" t-on-click="hidePrice">
         <i class='fa fa-eye'></i> Hide Price
       </div>
     </xpath>
