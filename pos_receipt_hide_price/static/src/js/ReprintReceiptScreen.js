@@ -1,18 +1,21 @@
 odoo.define("pos_receipt_hide_price.ReprintReceiptScreen", function (require) {
     "use strict";
 
+    const {useState} = owl.hooks;
     const ReprintReceiptScreen = require("point_of_sale.ReprintReceiptScreen");
     const Registries = require("point_of_sale.Registries");
 
     const HidePriceReprintReceiptScreen = (ReprintReceiptScreen) =>
         class extends ReprintReceiptScreen {
-            hidePrice() {
-                // FIXME: global var
-                this.env.pos.hidePrice = !this.env.pos.hidePrice;
-                this.render();
+            constructor() {
+                super(...arguments);
+                this.hpState = useState({priceHidden: false});
             }
-            isHidePrice() {
-                return this.env.pos.hidePrice;
+            hidePrice() {
+                this.hpState.priceHidden = !this.hpState.priceHidden;
+            }
+            get priceHidden() {
+                return this.hpState.priceHidden;
             }
         };
     Registries.Component.extend(ReprintReceiptScreen, HidePriceReprintReceiptScreen);

@@ -6,8 +6,12 @@ odoo.define("pos_receipt_hide_price.OrderReceipt", function (require) {
 
     const HidePriceOrderReceipt = (OrderReceipt) =>
         class extends OrderReceipt {
-            isHidePrice() {
-                return this.env.pos.hidePrice;
+            constructor(_, {hpState}) {
+                super(...arguments);
+                this.hpState = hpState;
+            }
+            get priceHidden() {
+                return this.hpState.priceHidden;
             }
         };
     Registries.Component.extend(OrderReceipt, HidePriceOrderReceipt);
