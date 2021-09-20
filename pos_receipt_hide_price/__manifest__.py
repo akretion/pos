@@ -9,5 +9,10 @@
     "license": "LGPL-3",
     "depends": ["point_of_sale"],
     "data": ["views/assets.xml"],
-    "qweb": ["static/src/xml/OrderReceipt.xml", "static/src/xml/hide-price.xml"],
+    "qweb": [
+        "static/src/xml/OrderReceipt.xml",
+        "static/src/xml/HidePrice.xml",
+        "static/src/xml/ReceiptScreen.xml",
+        "static/src/xml/ReprintReceiptScreen.xml",
+    ],
 }

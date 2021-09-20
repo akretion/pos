@@ -1,4 +1,4 @@
-odoo.define("pos_ticket_without_price.ReceiptScreen", function (require) {
+odoo.define("pos_receipt_hide_price.ReceiptScreen", function (require) {
     "use strict";
 
     const ReceiptScreen = require("point_of_sale.ReceiptScreen");

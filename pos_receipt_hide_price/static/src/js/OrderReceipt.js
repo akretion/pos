@@ -1,4 +1,4 @@
-odoo.define("pos_ticket_without_price.OrderReceipt", function (require) {
+odoo.define("pos_receipt_hide_price.OrderReceipt", function (require) {
     "use strict";
 
     const OrderReceipt = require("point_of_sale.OrderReceipt");
