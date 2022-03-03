@@ -96,9 +96,11 @@ odoo.define("pos_product_template.DB", function (require) {
             product_template_attribute_values
         ) {
             product_template_attribute_values.forEach((attribute_value) => {
-                this.product_template_attribute_value_by_id[
-                    attribute_value.id
-                ] = attribute_value;
+                if (attribute_value.ptav_product_variant_ids.length > 0) {
+                    this.product_template_attribute_value_by_id[
+                        attribute_value.id
+                    ] = attribute_value;
+                }
             });
         },
     });
