@@ -79,6 +79,9 @@ odoo.define("pos_product_template.models", function (require) {
                 "product_attribute_value_id",
                 "ptav_product_variant_ids",
             ],
+            domain: function () {
+                return [["product_tmpl_id.available_in_pos", "=", true]];
+            },
             loaded: function (self, values) {
                 self.db.add_product_template_attribute_values(values);
             },
