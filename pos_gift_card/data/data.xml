@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+        <record id="pos_payment_method_gift_card" model="pos.payment.method">
+                <field name="name">Gift Card</field>
+                <field name="is_gift_card">True</field>
+                <field name="is_cash_count">False</field>
+                <field name="receivable_account_id" ref="gift_card.gift_card_journal" />
+        </record>
+</odoo>
