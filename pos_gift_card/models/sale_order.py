@@ -13,8 +13,6 @@ class SaleOrder(models.Model):
     @api.model
     def _order_fields(self, ui_order):
         res = super()._order_fields(ui_order)
-        res["gift_card_line_ids"] = ui_order.order("gift_card_line_ids")
-        res["gift_card_amount_total"] = ui_order.order("gift_card_amount_total")
-        giftcard = self.env['gift.card'].browse(gift_card_id)
+        res["gift_card_line_ids"] = ui_order.get("gift_card_line_ids")
         return res
 
