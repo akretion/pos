@@ -20,6 +20,9 @@
     "data": [
         "views/pos_config_view.xml",
         "views/pos_assets.xml",
+        "views/gift_card.xml",
+        "views/gift_card_line.xml",
+        "views/pos_order.xml",
         "data/data.xml",
     ],
     "demo": [],

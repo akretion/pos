@@ -36,6 +36,7 @@ class PoSPayment(models.Model):
             code = False
         gift_card_line = self._create_gift_card_line(amount, gift_card_id, code)
         gift_card_line.pos_order_id = pos_order_id
+        gift_card_line.pos_payment_id = self.id
 
     def _create_gift_card_line(self, amount, card, code):
         line = self.env["gift.card.line"].create(

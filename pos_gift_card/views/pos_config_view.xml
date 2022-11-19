@@ -8,7 +8,10 @@
             <xpath expr="//div[@id='payment_methods_new']" position="before">
                 <div class="col-12 col-lg-6 o_setting_box" id="pos-coupon">
                     <div class="o_setting_left_pane">
-                        <field name="use_gift_card_as_payment" string="Gift Card Payment Mode"/>
+                        <field name="use_gift_card_as_payment" />
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="use_gift_card_as_payment"/>
                     </div>
                 </div>
             </xpath>

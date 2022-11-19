@@ -9,10 +9,3 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
 
     gift_card_id = fields.Many2one(comodel_name="gift.card")
-
-    @api.model
-    def _order_fields(self, ui_order):
-        res = super()._order_fields(ui_order)
-        res["gift_card_line_ids"] = ui_order.get("gift_card_line_ids")
-        return res
-
