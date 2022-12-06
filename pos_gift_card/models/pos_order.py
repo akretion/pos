@@ -33,8 +33,10 @@ class PosOrder(models.Model):
 
     def _compute_gift_card_line(self):
         for rec in self:
-            gift_card_lines = [line for line in self.env["gift.card.line"].search([]) if rec.id in line.pos_order_id.ids]
-            rec.gift_card_line_ids = [(6, 0, [line.id for line in gift_card_lines])]
+            gift_card_lines = self.env["gift.card.line"].search([
+                ['pos_order_id', '=', rec.id]
+            ])
+            rec.gift_card_line_ids = [(6, 0, gift_card_lines.ids)]
             rec.gift_card_line_count = len(gift_card_lines)
 
     def show_gift_card_line(self):

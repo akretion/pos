@@ -5,7 +5,7 @@
         <xpath expr="//div[hasclass('payment-name')]/t[@t-esc='line.payment_method.name']" position="after">
              <button
                 t-on-click="giftcardconfigure"
-                t-if="line.payment_method.name == 'Gift Card'"
+                t-if="line.payment_method.is_gift_card"
             > Configure </button>
              <ul>
                 <li class="info">

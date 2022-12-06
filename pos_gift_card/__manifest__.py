@@ -28,5 +28,6 @@
     "demo": [],
     "qweb": [
         "static/src/xml/GiftCardPaymentLine.xml",
+        "static/src/xml/GiftCardSelectPopup.xml",
     ],
 }

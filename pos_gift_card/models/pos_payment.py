@@ -27,7 +27,7 @@ class PoSPayment(models.Model):
         return result
 
     def _set_gift_card_line(self, values):
-        card_id = values['gift_card_selected_id']['id']
+        card_id = values['gift_card_selected_id']
         gift_card_id = self.env["gift.card"].browse(card_id)
         amount = values["amount"]
         code = gift_card_id.code
@@ -52,8 +52,6 @@ class PoSPayment(models.Model):
     def create(self, values):
         if values['payment_method_id'] == self.env.ref("pos_gift_card.pos_payment_method_gift_card").id:
             self._set_gift_card_line(values)
-            values['gift_card_selected_id'] = values['gift_card_selected_id']['id']
         return super().create(values)
-
 
 

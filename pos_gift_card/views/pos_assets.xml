@@ -5,6 +5,7 @@
             <script type="text/javascript" src="/pos_gift_card/static/src/js/models.js"></script>
             <script type="text/javascript" src="/pos_gift_card/static/src/js/PaymentScreenPaymentLines.js"></script>
             <script type="text/javascript" src="/pos_gift_card/static/src/js/PaymentScreen.js"></script>
+            <script type="text/javascript" src="/pos_gift_card/static/src/js/GiftCardSelectPopup.js"></script>
         </xpath>
     </template>
 </odoo>

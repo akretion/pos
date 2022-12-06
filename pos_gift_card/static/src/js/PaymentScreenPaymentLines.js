@@ -1,5 +1,6 @@
 /* Copyright 2022 Akretion (https://www.akretion.com)
  * @author Kévin Roche <kevin.roche@akretion.com>
+ * @author Raphaël Reverdy <raphael.reverdy@akretion.com>
  * License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). */
 
 odoo.define('pos_gift_card.PaymentScreenPaymentLines', function(require) {
@@ -14,35 +15,14 @@ odoo.define('pos_gift_card.PaymentScreenPaymentLines', function(require) {
                 return this.env.pos.get_order();
             }
             get selectedPaymentLine() {
-            return this.currentOrder.selected_paymentline;
-        }
-
-        async giftcardconfigure() {
-            if (this.currentOrder.get_client()) {
-                const { confirmed } = await this.showPopup('ConfirmPopup', {
-                        title: this.env._t('Gift Card'),
-                        body: this.env._t('Choose a Gift Card by:'),
-                        cancelText: this.env._t('Partner'),
-                        confirmText: this.env._t('Code'),
-                });
-                if (confirmed) {
-                    this.giftcardcode();
-                } else {
-                    this.giftcardpartner();
-                }
-            } else {
-                this.giftcardcode();
+                return this.currentOrder.selected_paymentline;
             }
-        }
 
+            async giftcardconfigure() {
+                this.giftcardPartnerOrCode();
+            }
 
-        /*BY CODE*/
-        async giftcardcode(){
-            const { confirmed, payload: code } = await this.showPopup('TextInputPopup', {
-                title: this.env._t('Enter Gift Card Code'),
-                startingValue: '',
-            });
-            if (confirmed && code !== '') {
+            async validateCode(code) {
                 var giftCard = await this.rpc({
                     model: "gift.card",
                     method: "search_read",
@@ -51,60 +31,81 @@ odoo.define('pos_gift_card.PaymentScreenPaymentLines', function(require) {
                     ],
                     fields: ["name", "code", "available_amount", "is_divisible"],
                 });
-                if (giftCard.length) {
-                    this.selectedPaymentLine.gift_card_selected_id = giftCard[0]
-                    this.selectedPaymentLine.gift_card_with_code = true;
+                if (!giftCard) { 
+                    return; 
                 } else {
-                    const { confirmed } = await this.showPopup("ErrorPopup", {
-                        title: this.env._t("Wrong Gift Card Code"),
-                        body: this.env._t(
-                            "Please retry"
-                        ),
+                    return giftCard[0];
+                }
+            }
+
+            applyGiftcard(paymentLine, giftcard, code_given=false) {
+                paymentLine.gift_card_selected_id = giftcard.id
+                paymentLine.gift_card_with_code = code_given;
+                paymentLine.amount = Math.min(
+                    giftcard.available_amount,
+                    paymentLine.order.get_due(paymentLine)
+                );
+            }
+
+            async giftcardPartnerOrCode(){
+                var currentClient = this.currentOrder.get_client();
+                var giftCardList = [];
+
+                if (currentClient) {
+                    let giftCards = await this.rpc({
+                        model: "gift.card",
+                        method: "search_read",
+                        domain: [
+                            ["beneficiary_id", "=", currentClient.id],
+                            ["state", "=", "active"]
+                        ],
+                        fields: ["name", "available_amount", "is_divisible"],
                     });
-                    if (confirmed && code !== '') {
-                        this.giftcardconfigure()
+
+                    giftCardList = giftCards.map(gift => ({
+                        id: gift.id,
+                        label: gift.name + " - " + gift.available_amount,
+                        isSelected: gift.id === this.selectedPaymentLine.gift_card_selected_id,
+                        item: gift,
+                    }));
+                }
+
+                const { confirmed, payload } = await this.showPopup(
+                    'GiftCardSelectPopup',
+                    {
+                        title: this.env._t('Select or enter a gift card'),
+                        list: giftCardList,
+                    }
+                );
+                if (confirmed) {
+                    if (payload.method == "code") {
+                        if (payload.code !== '') {
+                            var giftcard = await this.validateCode(payload.code);
+                            if (giftcard) {
+                                var code_given = true;
+                                this.applyGiftcard(this.selectedPaymentLine, giftcard, code_given);
+                                this.trigger('select-payment-line', this.selectedPaymentLine);
+                            } 
+                        } else {
+                            const { confirmed } = await this.showPopup("ErrorPopup", {
+                                title: this.env._t("Wrong Gift Card Code"),
+                                body: this.env._t(
+                                    "Please retry"
+                                ),
+                            });
+                            if (confirmed) {
+                                this.giftcardconfigure()
+                            }
+                        }
+                    } else {
+                        var giftcard = payload.list;
+                        console.log(giftcard)
+                        this.applyGiftcard(this.selectedPaymentLine, giftcard);
+                        this.trigger('select-payment-line', this.selectedPaymentLine);
                     }
                 }
-            }
-        };
-
-        /*BY PARTNER*/
-        async giftcardpartner(){
-            var currentClient = this.currentOrder.get_client();
-            var giftCards = await this.rpc({
-                model: "gift.card",
-                method: "search_read",
-                domain: [
-                    ["beneficiary_id", "=", currentClient.id],
-                    ["state", "=", "active"]
-                ],
-                fields: ["name", "available_amount", "is_divisible"],
-            });
-
-            let giftCardList = [];
-            let gifts = giftCards.map(gift => ({
-                id: gift.id,
-                label: gift.name + " - " + gift.available_amount,
-                isSelected: gift.id === this.selectedPaymentLine.gift_card_selected_id,
-                item: gift,
-            }));
-            giftCardList = giftCardList.concat(gifts);
-
-
-            const { confirmed, payload: giftCard } = await this.showPopup(
-                'SelectionPopup',
-                {
-                    title: this.env._t('Select the gift card'),
-                    list: giftCardList,
-                }
-            );
-            if (confirmed) {
-                this.selectedPaymentLine.gift_card_selected_id = giftCard
-                this.selectedPaymentLine.gift_card_with_code = false;
-            }
-        };
-
-}
+            };
+    }
     Registries.Component.extend(PaymentScreenPaymentLines, PosGiftcardPaymentLines);
 
     return PosGiftcardPaymentLines;

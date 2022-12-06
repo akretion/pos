@@ -30,6 +30,8 @@ odoo.define("pos_gift_card.models", function (require) {
         },
     });
 
+  models.load_fields("pos.payment.method",['is_gift_card'])
+  
   models.load_models([
     {
       model: "gift.card",
