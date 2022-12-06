@@ -9,15 +9,15 @@ class GiftCard(models.Model):
     _inherit = "gift.card"
 
     pos_order_ids = fields.Many2many(
-        comodel_name="sale.order",
+        comodel_name="pos.order",
         compute="_compute_pos_order_ids",
         string="POS Orders",
         readonly=True,
         )
 
-    @api.depends("gift_card_line_ids.pos_order_id")
+    @api.depends("gift_card_line_ids.pos_order_ids")
     def _compute_pos_order_ids(self):
         for rec in self:
-            rec.pos_order_ids = rec.gift_card_line_ids.mapped("pos_order_id").ids
+            rec.pos_order_ids = rec.gift_card_line_ids.mapped("pos_order_ids").ids
 
 

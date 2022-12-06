@@ -8,17 +8,17 @@ from odoo import fields, models, api
 class GiftCardLine(models.Model):
     _inherit = "gift.card.line"
 
-    pos_order_id = fields.Many2one(comodel_name="pos.order")
-
     pos_payment_id = fields.Many2one(
         comodel_name="pos.payment",
-        string="Pos Payment",
-        compute="_compute_pos_payment_id",
-        store=True,
-        )
+        readonly=True)
 
-    @api.depends("pos_order_id.payment_ids")
-    def _compute_pos_payment_id(self):
+    pos_order_ids = fields.Many2many(
+        comodel_name="pos.order",
+        compute="_compute_pos_order_ids",
+        readonly=True
+    )
+
+    @api.depends("pos_payment_id")
+    def _compute_pos_order_ids(self):
         for rec in self:
-            rec.pos_payment_id = self.env["pos.payment"].search([("gift_card_selected_id","=", rec.gift_card_id.id), ("pos_order_id","=",rec.pos_order_id.id)], limit=1)
-
+            rec.pos_order_ids = rec.pos_payment_id.mapped("pos_order_id")

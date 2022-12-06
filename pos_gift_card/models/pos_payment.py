@@ -31,12 +31,11 @@ class PoSPayment(models.Model):
         gift_card_id = self.env["gift.card"].browse(card_id)
         amount = values["amount"]
         code = gift_card_id.code
-        pos_order_id = values["pos_order_id"]
         if not values.get('gift_card_with_code'):
             code = False
         gift_card_line = self._create_gift_card_line(amount, gift_card_id, code)
-        gift_card_line.pos_order_id = pos_order_id
         gift_card_line.pos_payment_id = self.id
+        return gift_card_line
 
     def _create_gift_card_line(self, amount, card, code):
         line = self.env["gift.card.line"].create(
