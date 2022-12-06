@@ -4,25 +4,30 @@
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
     <record model="ir.ui.view" id="gift_card_form_view">
-        <field name="name">gift.card.form</field>
         <field name="model">gift.card</field>
         <field name="inherit_id" ref="gift_card.gift_card_form_view" />
         <field name="arch" type="xml">
-            <xpath expr="//tree/field[@name='sale_order_ids']" position="before">
-                <field name="pos_order_ids"/>
-                <field name="pos_payment_id"/>
+            <xpath expr="//tree/field[@name='sale_order_ids']" position="after">
+                <field name="pos_order_ids" widget="many2many_tags" optional="hide" />
+            </xpath>
+            <xpath expr="//tree/field[@name='payment_id']" position="after">                
+                <field name="pos_payment_id" optional="hide" />
             </xpath>
         </field>
     </record>
+
 
     <record model="ir.ui.view" id="gift_card_tree_view">
         <field name="name">gift.card.tree</field>
         <field name="model">gift.card</field>
         <field name="inherit_id" ref="gift_card.gift_card_tree_view" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='sale_order_ids']" position="after">
+            <field name="sale_order_ids" position="after">
                 <field name="pos_order_ids" widget="many2many_tags" optional="show"/>
-            </xpath>
+            </field>
+            <field name="payment_id" position="after">
+                <field name="pos_payment_id" optional="show"/>
+            </field>
         </field>
     </record>
 

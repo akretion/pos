@@ -3,29 +3,32 @@
      @author Kévin Roche <kevin.roche@akretion.com>
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
-    <record model="ir.ui.view" id="gift_card_form_view">
-        <field name="name">gift.card.line.form</field>
-        <field name="model">gift.card.line</field>
-        <field name="inherit_id" ref="gift_card.gift_card_line_view_form" />
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='sale_order_ids']" position="before">
-                <field name="pos_order_id"/>
-
-            </xpath>
-        </field>
-    </record>
+   
 
     <record model="ir.ui.view" id="gift_card_line_tree_view">
-        <field name="name">gift.card.line.tree</field>
         <field name="model">gift.card.line</field>
         <field name="inherit_id" ref="gift_card.gift_card_line_tree_view" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='sale_order_ids']" position="after">
-                <field name="pos_order_id" optional="show"/>
-            </xpath>
-            <xpath expr="//field[@name='payment_id']" position="after">
-                <field name="pos_payment_id" optional="show"/>
-            </xpath>
+            <field name="sale_order_ids" position="after">
+                <field name="pos_order_ids" widget="many2many_tags" optional="show" />
+            </field>
+            <field name="payment_id" position="after">
+                <field name="pos_payment_id" optional="hide" />
+            </field>
         </field>
     </record>
+
+    <record model="ir.ui.view" id="gift_card_line_form_view">
+        <field name="model">gift.card.line</field>
+        <field name="inherit_id" ref="gift_card.gift_card_line_form_view" />
+        <field name="arch" type="xml">
+            <field name="sale_order_ids" position="after">
+                <field name="pos_order_ids" />
+            </field>
+            <field name="payment_id" position="after">
+                <field name="pos_payment_id"/>
+            </field>
+        </field>
+    </record>
+
 </odoo>
