@@ -12,10 +12,12 @@ odoo.define("pos_gift_card.models", function (require) {
         initialize: function () {
             _paymentlinegiftcard.initialize.apply(this, arguments);
             this.gift_card_id = null;
+            this.gift_card_available_amount = null;
         },
         init_from_JSON: function (json) {
             _paymentlinegiftcard.init_from_JSON.apply(this, arguments);
             this.gift_card_id = json.gift_card_id;
+            this.gift_card_available_amount = json.gift_card_available_amount;
         },
         export_as_JSON: function () {
             var vals = _paymentlinegiftcard.export_as_JSON.apply(this, arguments);

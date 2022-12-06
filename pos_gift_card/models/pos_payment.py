@@ -23,8 +23,11 @@ class PoSPayment(models.Model):
         return result
 
     def _set_gift_card_line(self, values):
-        card_id = values['gift_card_selected_id']
+        card_id = values['gift_card_id']
         gift_card_id = self.env["gift.card"].browse(card_id)
+        if (not gift_card_id):
+            # TODO: Raise ?
+            return
         amount = values["amount"]
         gift_card_line = self._create_gift_card_line(amount, gift_card_id)
         gift_card_line.pos_payment_id = self.id
@@ -35,19 +38,15 @@ class PoSPayment(models.Model):
             {
                 "gift_card_id": card.id,
                 "name": card.name,
-                "beneficiary_id": self.partner_id,
+                "beneficiary_id": self.partner_id.id,
                 "amount_used": amount,
             }
         )
         return line
 
     def create(self, values):
-        payment_method = self.browse(values['payment_method_id'])
-        if not payment_method:
-            # TODO warning ?
-            break
-        else if payment_method.is_gift_card:
-            self._set_gift_card_line(values)
-        return super().create(values)
+        res = super().create(values)
+        if res.payment_method_id.is_gift_card:
+            res._set_gift_card_line(values)
 
 

@@ -38,8 +38,16 @@ odoo.define('pos_gift_card.PaymentScreenPaymentLines', function(require) {
                 }
             }
 
+            isGiftcardAlreadyInUse(giftcard) {
+                //ensure a gift card is used only
+                //once per order
+                return this.currentOrder.get_paymentlines(
+                    ).some(x=> x.giftcard_id == giftcard.id);
+            }
+
             applyGiftcard(paymentLine, giftcard) {
                 paymentLine.gift_card_id = giftcard.id
+                paymentLine.gift_card_available_amount = giftcard.available_amount;
                 paymentLine.amount = Math.min(
                     giftcard.available_amount,
                     paymentLine.order.get_due(paymentLine)
@@ -89,13 +97,25 @@ odoo.define('pos_gift_card.PaymentScreenPaymentLines', function(require) {
                                 ),
                             });
                             if (confirmed) {
-                                this.giftcardconfigure()
+                                return this.giftcardconfigure()
                             }                            
                         }
                     } else {
                         var giftcard = payload.list;
                     }
                     if (giftcard) {
+                        if (this.isGiftcardAlreadyInUse(giftcard)) {
+                            const { confirmed } = await this.showPopup("ErrorPopup", {
+                                title: this.env._t("Gift Card already in this order"),
+                                body: this.env._t(
+                                    "A gift card can be used only once per order."
+                                ),
+                            });
+                            if (confirmed) {
+                                return this.giftcardconfigure()
+                            }
+                        }
+                        
                         this.applyGiftcard(this.selectedPaymentLine, giftcard);
                         this.trigger('select-payment-line', this.selectedPaymentLine);
                     }

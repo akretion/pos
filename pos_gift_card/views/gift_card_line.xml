@@ -20,7 +20,7 @@
 
     <record model="ir.ui.view" id="gift_card_line_form_view">
         <field name="model">gift.card.line</field>
-        <field name="inherit_id" ref="gift_card.gift_card_line_form_view" />
+        <field name="inherit_id" ref="gift_card.gift_card_line_view_form" />
         <field name="arch" type="xml">
             <field name="sale_order_ids" position="after">
                 <field name="pos_order_ids" />

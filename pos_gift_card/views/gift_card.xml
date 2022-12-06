@@ -18,15 +18,11 @@
 
 
     <record model="ir.ui.view" id="gift_card_tree_view">
-        <field name="name">gift.card.tree</field>
         <field name="model">gift.card</field>
         <field name="inherit_id" ref="gift_card.gift_card_tree_view" />
         <field name="arch" type="xml">
             <field name="sale_order_ids" position="after">
                 <field name="pos_order_ids" widget="many2many_tags" optional="show"/>
-            </field>
-            <field name="payment_id" position="after">
-                <field name="pos_payment_id" optional="show"/>
             </field>
         </field>
     </record>
