@@ -4,11 +4,6 @@
 
 from odoo import api, fields, models
 
-class PosPayment(models.Model):
-    _inherit = "pos.payment"
-    gift_card_id = fields.Many2one(comodel_name="gift.card")
-
-
 
 class PosOrder(models.Model):
     _inherit = "pos.order"
@@ -18,9 +13,7 @@ class PosOrder(models.Model):
         fields = super()._payment_fields(order, ui_paymentline)
 
         fields.update({
-            'gift_card_with_code': ui_paymentline.get('gift_card_with_code'),
-            'gift_card_amount': ui_paymentline.get('gift_card_amount'),
-            'gift_card_selected_id': ui_paymentline.get('gift_card_selected_id'),
+            'gift_card_id': ui_paymentline.get('gift_card_id'),
         })
         return fields
 

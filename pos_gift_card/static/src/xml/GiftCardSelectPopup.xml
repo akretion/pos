@@ -17,7 +17,7 @@
                                 </div>
                             </t>
                         </t>
-                        <label for="giftcardInput">Gift card code: </label>
+                        <label for="giftcardInput">Gift card code:</label>
                         <input id="giftcardInput" type="text" t-model="state.inputValue" t-ref="input" />
 
                     </div>

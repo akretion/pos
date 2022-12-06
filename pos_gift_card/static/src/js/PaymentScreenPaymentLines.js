@@ -38,9 +38,8 @@ odoo.define('pos_gift_card.PaymentScreenPaymentLines', function(require) {
                 }
             }
 
-            applyGiftcard(paymentLine, giftcard, code_given=false) {
-                paymentLine.gift_card_selected_id = giftcard.id
-                paymentLine.gift_card_with_code = code_given;
+            applyGiftcard(paymentLine, giftcard) {
+                paymentLine.gift_card_id = giftcard.id
                 paymentLine.amount = Math.min(
                     giftcard.available_amount,
                     paymentLine.order.get_due(paymentLine)
@@ -65,7 +64,7 @@ odoo.define('pos_gift_card.PaymentScreenPaymentLines', function(require) {
                     giftCardList = giftCards.map(gift => ({
                         id: gift.id,
                         label: gift.name + " - " + gift.available_amount,
-                        isSelected: gift.id === this.selectedPaymentLine.gift_card_selected_id,
+                        isSelected: gift.id === this.selectedPaymentLine.gift_card_id,
                         item: gift,
                     }));
                 }
@@ -79,14 +78,10 @@ odoo.define('pos_gift_card.PaymentScreenPaymentLines', function(require) {
                 );
                 if (confirmed) {
                     if (payload.method == "code") {
-                        if (payload.code !== '') {
+                        if (payload.code) {
                             var giftcard = await this.validateCode(payload.code);
-                            if (giftcard) {
-                                var code_given = true;
-                                this.applyGiftcard(this.selectedPaymentLine, giftcard, code_given);
-                                this.trigger('select-payment-line', this.selectedPaymentLine);
-                            } 
-                        } else {
+                        }
+                        if (!payload.code || !giftcard) {
                             const { confirmed } = await this.showPopup("ErrorPopup", {
                                 title: this.env._t("Wrong Gift Card Code"),
                                 body: this.env._t(
@@ -95,11 +90,12 @@ odoo.define('pos_gift_card.PaymentScreenPaymentLines', function(require) {
                             });
                             if (confirmed) {
                                 this.giftcardconfigure()
-                            }
+                            }                            
                         }
                     } else {
                         var giftcard = payload.list;
-                        console.log(giftcard)
+                    }
+                    if (giftcard) {
                         this.applyGiftcard(this.selectedPaymentLine, giftcard);
                         this.trigger('select-payment-line', this.selectedPaymentLine);
                     }
