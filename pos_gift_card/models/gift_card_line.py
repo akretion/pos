@@ -21,4 +21,4 @@ class GiftCardLine(models.Model):
     @api.depends("pos_payment_id")
     def _compute_pos_order_ids(self):
         for rec in self:
-            rec.pos_order_ids = rec.pos_payment_id.mapped("pos_order_id")
+            rec.pos_order_ids = rec.account_move_ids.mapped("pos_order_ids")
