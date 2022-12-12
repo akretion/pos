@@ -25,13 +25,15 @@ odoo.define('point_of_sale.GiftCardSelectPopup', function (require) {
             var code = this.state.inputValue;
             if (selected && selected.item) {
                 var method = "list";
+                var item = selected.item;
             } else {
                 var method = "code";
+                var item = undefined;
             }
             return { 
                 "method": method,
                 "code": code,
-                "list": selected.item
+                "list": item
             };
         }
     }
