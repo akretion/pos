@@ -37,6 +37,8 @@ class PoSPayment(models.Model):
         line = self.env["gift.card.line"].create(
             {
                 "gift_card_id": card.id,
+                # for the pos we want a code validation, not a partner validation
+                "code": card.code,
                 "name": card.name,
                 "beneficiary_id": self.partner_id.id,
                 "amount_used": amount,
