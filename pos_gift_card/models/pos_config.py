@@ -7,9 +7,6 @@ from odoo import api, fields, models
 class PosConfig(models.Model):
     _inherit = 'pos.config'
 
-    use_gift_card_as_payment = fields.Boolean(string="Gift Card Payment Mode")
-
-
     def setup_defaults(self, company):
         self = self._add_gift_card_payment_method(company)
         return super().setup_defaults()

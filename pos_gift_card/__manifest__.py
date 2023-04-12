@@ -18,7 +18,6 @@
         "gift_card",
     ],
     "data": [
-        "views/pos_config_view.xml",
         "views/pos_assets.xml",
         "views/gift_card.xml",
         "views/gift_card_line.xml",
