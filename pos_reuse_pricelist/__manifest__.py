@@ -12,9 +12,11 @@
     "depends": [
         "point_of_sale",
     ],
-    "data": [
-        "views/pos_assets.xml",
-    ],
+    "assets": {
+        "point_of_sale._assets_pos": [
+            "/pos_reuse_pricelist/static/src/overrides/store/**",
+        ],
+    },
     "demo": [],
     "installable": True,
 }
