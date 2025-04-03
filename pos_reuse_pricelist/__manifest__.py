@@ -4,7 +4,7 @@
 
 {
     "name": "PoS reuse pricelist",
-    "version": "14.0.1.0.1",
+    "version": "18.0.1.0.0",
     "category": "Point Of Sale",
     "author": "Akretion, Odoo Community Association (OCA)",
     "license": "AGPL-3",
