@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Odoo POS - Ingenico Caisse-AP Connector",
+  "version": "1.0.0",
+  "description": "Bridges Odoo POS (Web) with a local Ingenico Terminal via HTTP Bridge.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1/*",
+    "http://localhost/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content_script.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Configure Terminal Bridge"
+  }
+}
