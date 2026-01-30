@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add Port field to IoT Device Form -->
+    <record id="iot_device_view_form_inherit_payment" model="ir.ui.view">
+        <field name="name">iot.device.form.payment</field>
+        <field name="model">iot.device</field>
+        <field name="inherit_id" ref="iot_oca.iot_device_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ip']" position="after">
+                <field name="tcp_port" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
